@@ -3,20 +3,41 @@ info:
   # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: HIMS Hospital Information Management System API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: patients
+    description: Patient registration and management
+  - name: appointments
+    description: Appointment scheduling and OPD queue
+  - name: consultations
+    description: Doctor EMR and consultation workspace
+  - name: admissions
+    description: IPD admissions and inpatient management
+  - name: beds
+    description: Bed and ward management
+  - name: labOrders
+    description: Laboratory orders and results
+  - name: prescriptions
+    description: Prescriptions management
+  - name: billing
+    description: Invoices and billing
+  - name: emergency
+    description: Emergency department triage and cases
+  - name: medications
+    description: Pharmacy drug catalog
+  - name: dashboard
+    description: Dashboard analytics and stats
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +45,784 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  # ── PATIENTS ──────────────────────────────────────────────────────────────
+  /patients:
+    get:
+      operationId: listPatients
+      tags: [patients]
+      summary: List / search patients
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        "200":
+          description: Patient list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PatientListResponse"
+    post:
+      operationId: createPatient
+      tags: [patients]
+      summary: Register a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePatientBody"
+      responses:
+        "201":
+          description: Patient created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  /patients/{id}:
+    get:
+      operationId: getPatient
+      tags: [patients]
+      summary: Get patient by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Patient record
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+        "404":
+          description: Not found
+    patch:
+      operationId: updatePatient
+      tags: [patients]
+      summary: Update patient demographics
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdatePatientBody"
+      responses:
+        "200":
+          description: Updated patient
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Patient"
+
+  # ── APPOINTMENTS / OPD QUEUE ──────────────────────────────────────────────
+  /appointments:
+    get:
+      operationId: listAppointments
+      tags: [appointments]
+      summary: List appointments
+      parameters:
+        - name: date
+          in: query
+          schema:
+            type: string
+        - name: doctorId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Appointment list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentListResponse"
+    post:
+      operationId: createAppointment
+      tags: [appointments]
+      summary: Book an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAppointmentBody"
+      responses:
+        "201":
+          description: Appointment booked
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+
+  /appointments/{id}:
+    get:
+      operationId: getAppointment
+      tags: [appointments]
+      summary: Get appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Appointment detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+    patch:
+      operationId: updateAppointment
+      tags: [appointments]
+      summary: Update appointment status or details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAppointmentBody"
+      responses:
+        "200":
+          description: Updated appointment
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Appointment"
+    delete:
+      operationId: cancelAppointment
+      tags: [appointments]
+      summary: Cancel an appointment
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "204":
+          description: Cancelled
+
+  /appointments/queue/today:
+    get:
+      operationId: getTodayQueue
+      tags: [appointments]
+      summary: Get today's OPD token queue
+      responses:
+        "200":
+          description: Today's queue
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AppointmentListResponse"
+
+  # ── CONSULTATIONS / EMR ──────────────────────────────────────────────────
+  /consultations:
+    get:
+      operationId: listConsultations
+      tags: [consultations]
+      summary: List consultations
+      parameters:
+        - name: patientId
+          in: query
+          schema:
+            type: integer
+        - name: doctorId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Consultation list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConsultationListResponse"
+    post:
+      operationId: createConsultation
+      tags: [consultations]
+      summary: Start a new consultation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateConsultationBody"
+      responses:
+        "201":
+          description: Consultation created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+
+  /consultations/{id}:
+    get:
+      operationId: getConsultation
+      tags: [consultations]
+      summary: Get consultation EMR record
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Consultation detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+    patch:
+      operationId: updateConsultation
+      tags: [consultations]
+      summary: Update SOAP notes, diagnosis, vitals
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateConsultationBody"
+      responses:
+        "200":
+          description: Updated consultation
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Consultation"
+
+  # ── ADMISSIONS (IPD) ─────────────────────────────────────────────────────
+  /admissions:
+    get:
+      operationId: listAdmissions
+      tags: [admissions]
+      summary: List current admissions
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: wardId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Admission list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AdmissionListResponse"
+    post:
+      operationId: createAdmission
+      tags: [admissions]
+      summary: Admit a patient to IPD
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAdmissionBody"
+      responses:
+        "201":
+          description: Admission created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admission"
+
+  /admissions/{id}:
+    get:
+      operationId: getAdmission
+      tags: [admissions]
+      summary: Get IPD admission file
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Admission detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admission"
+    patch:
+      operationId: updateAdmission
+      tags: [admissions]
+      summary: Update admission (discharge, transfer, notes)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateAdmissionBody"
+      responses:
+        "200":
+          description: Updated admission
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Admission"
+
+  # ── BEDS ──────────────────────────────────────────────────────────────────
+  /beds:
+    get:
+      operationId: listBeds
+      tags: [beds]
+      summary: List all beds with occupancy status
+      parameters:
+        - name: wardId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Bed list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BedListResponse"
+
+  /beds/{id}:
+    patch:
+      operationId: updateBed
+      tags: [beds]
+      summary: Update bed status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateBedBody"
+      responses:
+        "200":
+          description: Updated bed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Bed"
+
+  # ── LABORATORY ORDERS ────────────────────────────────────────────────────
+  /lab-orders:
+    get:
+      operationId: listLabOrders
+      tags: [labOrders]
+      summary: List lab orders
+      parameters:
+        - name: patientId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Lab order list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LabOrderListResponse"
+    post:
+      operationId: createLabOrder
+      tags: [labOrders]
+      summary: Order lab tests
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLabOrderBody"
+      responses:
+        "201":
+          description: Lab order created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LabOrder"
+
+  /lab-orders/{id}:
+    get:
+      operationId: getLabOrder
+      tags: [labOrders]
+      summary: Get lab order details and results
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Lab order detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LabOrder"
+    patch:
+      operationId: updateLabOrder
+      tags: [labOrders]
+      summary: Enter lab results or update status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLabOrderBody"
+      responses:
+        "200":
+          description: Updated lab order
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LabOrder"
+
+  # ── PRESCRIPTIONS ────────────────────────────────────────────────────────
+  /prescriptions:
+    get:
+      operationId: listPrescriptions
+      tags: [prescriptions]
+      summary: List prescriptions
+      parameters:
+        - name: patientId
+          in: query
+          schema:
+            type: integer
+        - name: consultationId
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Prescription list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PrescriptionListResponse"
+    post:
+      operationId: createPrescription
+      tags: [prescriptions]
+      summary: Create a prescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePrescriptionBody"
+      responses:
+        "201":
+          description: Prescription created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Prescription"
+
+  # ── MEDICATIONS (Pharmacy Drug Catalog) ──────────────────────────────────
+  /medications:
+    get:
+      operationId: listMedications
+      tags: [medications]
+      summary: Search pharmacy drug catalog
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: Medication list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MedicationListResponse"
+
+  # ── BILLING ──────────────────────────────────────────────────────────────
+  /invoices:
+    get:
+      operationId: listInvoices
+      tags: [billing]
+      summary: List invoices
+      parameters:
+        - name: patientId
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Invoice list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/InvoiceListResponse"
+    post:
+      operationId: createInvoice
+      tags: [billing]
+      summary: Generate invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateInvoiceBody"
+      responses:
+        "201":
+          description: Invoice created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+
+  /invoices/{id}:
+    get:
+      operationId: getInvoice
+      tags: [billing]
+      summary: Get invoice details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Invoice detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+    patch:
+      operationId: updateInvoice
+      tags: [billing]
+      summary: Update invoice status (pay, void)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateInvoiceBody"
+      responses:
+        "200":
+          description: Updated invoice
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Invoice"
+
+  # ── EMERGENCY ────────────────────────────────────────────────────────────
+  /emergency-cases:
+    get:
+      operationId: listEmergencyCases
+      tags: [emergency]
+      summary: List active emergency cases
+      parameters:
+        - name: triage
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Emergency case list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyCaseListResponse"
+    post:
+      operationId: createEmergencyCase
+      tags: [emergency]
+      summary: Register emergency case with triage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateEmergencyCaseBody"
+      responses:
+        "201":
+          description: Emergency case created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyCase"
+
+  /emergency-cases/{id}:
+    get:
+      operationId: getEmergencyCase
+      tags: [emergency]
+      summary: Get emergency case details
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Emergency case detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyCase"
+    patch:
+      operationId: updateEmergencyCase
+      tags: [emergency]
+      summary: Update triage, disposition, or status
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateEmergencyCaseBody"
+      responses:
+        "200":
+          description: Updated emergency case
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EmergencyCase"
+
+  # ── DASHBOARD (Wow Endpoints) ─────────────────────────────────────────────
+  /dashboard/stats:
+    get:
+      operationId: getDashboardStats
+      tags: [dashboard]
+      summary: Get key hospital KPI stats
+      responses:
+        "200":
+          description: Dashboard stats
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardStats"
+
+  /dashboard/bed-summary:
+    get:
+      operationId: getBedSummary
+      tags: [dashboard]
+      summary: Bed occupancy summary by ward
+      responses:
+        "200":
+          description: Bed summary
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BedSummaryResponse"
+
+  /dashboard/recent-activity:
+    get:
+      operationId: getRecentActivity
+      tags: [dashboard]
+      summary: Recent hospital activity feed
+      responses:
+        "200":
+          description: Activity feed
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecentActivityResponse"
+
+  /dashboard/revenue-chart:
+    get:
+      operationId: getRevenueChart
+      tags: [dashboard]
+      summary: Revenue chart data for last 30 days
+      responses:
+        "200":
+          description: Revenue chart
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RevenueChartResponse"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +833,1055 @@ components:
       required:
         - status
 
+    # ── PATIENT ─────────────────────────────────────────────────────────────
+    Patient:
+      type: object
+      properties:
+        id:
+          type: integer
+        mrNumber:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+        gender:
+          type: string
+        bloodGroup:
+          type: ["string", "null"]
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        emergencyContactName:
+          type: ["string", "null"]
+        emergencyContactPhone:
+          type: ["string", "null"]
+        allergies:
+          type: ["string", "null"]
+        chronicConditions:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - mrNumber
+        - firstName
+        - lastName
+        - dateOfBirth
+        - gender
+        - phone
+        - createdAt
+        - updatedAt
+
+    CreatePatientBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+        gender:
+          type: string
+        bloodGroup:
+          type: ["string", "null"]
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        emergencyContactName:
+          type: ["string", "null"]
+        emergencyContactPhone:
+          type: ["string", "null"]
+        allergies:
+          type: ["string", "null"]
+        chronicConditions:
+          type: ["string", "null"]
+      required:
+        - firstName
+        - lastName
+        - dateOfBirth
+        - gender
+        - phone
+
+    UpdatePatientBody:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dateOfBirth:
+          type: string
+        gender:
+          type: string
+        bloodGroup:
+          type: ["string", "null"]
+        phone:
+          type: string
+        email:
+          type: ["string", "null"]
+        address:
+          type: ["string", "null"]
+        emergencyContactName:
+          type: ["string", "null"]
+        emergencyContactPhone:
+          type: ["string", "null"]
+        allergies:
+          type: ["string", "null"]
+        chronicConditions:
+          type: ["string", "null"]
+
+    PatientListResponse:
+      type: object
+      properties:
+        patients:
+          type: array
+          items:
+            $ref: "#/components/schemas/Patient"
+        total:
+          type: integer
+      required:
+        - patients
+        - total
+
+    # ── APPOINTMENT ─────────────────────────────────────────────────────────
+    Appointment:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        doctorId:
+          type: integer
+        doctorName:
+          type: string
+        department:
+          type: string
+        scheduledAt:
+          type: string
+        tokenNumber:
+          type: ["integer", "null"]
+        visitType:
+          type: string
+        status:
+          type: string
+        chiefComplaint:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - patientId
+        - patientName
+        - doctorId
+        - doctorName
+        - department
+        - scheduledAt
+        - visitType
+        - status
+        - createdAt
+
+    CreateAppointmentBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        doctorId:
+          type: integer
+        department:
+          type: string
+        scheduledAt:
+          type: string
+        visitType:
+          type: string
+        chiefComplaint:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - patientId
+        - doctorId
+        - department
+        - scheduledAt
+        - visitType
+
+    UpdateAppointmentBody:
+      type: object
+      properties:
+        status:
+          type: string
+        scheduledAt:
+          type: string
+        chiefComplaint:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+
+    AppointmentListResponse:
+      type: object
+      properties:
+        appointments:
+          type: array
+          items:
+            $ref: "#/components/schemas/Appointment"
+        total:
+          type: integer
+      required:
+        - appointments
+        - total
+
+    # ── CONSULTATION ─────────────────────────────────────────────────────────
+    Consultation:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        doctorId:
+          type: integer
+        doctorName:
+          type: string
+        appointmentId:
+          type: ["integer", "null"]
+        chiefComplaint:
+          type: ["string", "null"]
+        subjective:
+          type: ["string", "null"]
+        objective:
+          type: ["string", "null"]
+        assessment:
+          type: ["string", "null"]
+        plan:
+          type: ["string", "null"]
+        diagnosis:
+          type: ["string", "null"]
+        icdCode:
+          type: ["string", "null"]
+        bpSystolic:
+          type: ["integer", "null"]
+        bpDiastolic:
+          type: ["integer", "null"]
+        pulse:
+          type: ["integer", "null"]
+        temperature:
+          type: ["number", "null"]
+        spo2:
+          type: ["integer", "null"]
+        weight:
+          type: ["number", "null"]
+        height:
+          type: ["number", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+      required:
+        - id
+        - patientId
+        - patientName
+        - doctorId
+        - doctorName
+        - status
+        - createdAt
+        - updatedAt
+
+    CreateConsultationBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        doctorId:
+          type: integer
+        appointmentId:
+          type: ["integer", "null"]
+        chiefComplaint:
+          type: ["string", "null"]
+      required:
+        - patientId
+        - doctorId
+
+    UpdateConsultationBody:
+      type: object
+      properties:
+        chiefComplaint:
+          type: ["string", "null"]
+        subjective:
+          type: ["string", "null"]
+        objective:
+          type: ["string", "null"]
+        assessment:
+          type: ["string", "null"]
+        plan:
+          type: ["string", "null"]
+        diagnosis:
+          type: ["string", "null"]
+        icdCode:
+          type: ["string", "null"]
+        bpSystolic:
+          type: ["integer", "null"]
+        bpDiastolic:
+          type: ["integer", "null"]
+        pulse:
+          type: ["integer", "null"]
+        temperature:
+          type: ["number", "null"]
+        spo2:
+          type: ["integer", "null"]
+        weight:
+          type: ["number", "null"]
+        height:
+          type: ["number", "null"]
+        status:
+          type: string
+
+    ConsultationListResponse:
+      type: object
+      properties:
+        consultations:
+          type: array
+          items:
+            $ref: "#/components/schemas/Consultation"
+        total:
+          type: integer
+      required:
+        - consultations
+        - total
+
+    # ── ADMISSION ────────────────────────────────────────────────────────────
+    Admission:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        doctorId:
+          type: integer
+        doctorName:
+          type: string
+        bedId:
+          type: ["integer", "null"]
+        bedNumber:
+          type: ["string", "null"]
+        ward:
+          type: string
+        admissionDate:
+          type: string
+        dischargeDate:
+          type: ["string", "null"]
+        admittingDiagnosis:
+          type: string
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+      required:
+        - id
+        - patientId
+        - patientName
+        - doctorId
+        - doctorName
+        - ward
+        - admissionDate
+        - admittingDiagnosis
+        - status
+        - createdAt
+
+    CreateAdmissionBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        doctorId:
+          type: integer
+        bedId:
+          type: ["integer", "null"]
+        ward:
+          type: string
+        admissionDate:
+          type: string
+        admittingDiagnosis:
+          type: string
+        notes:
+          type: ["string", "null"]
+      required:
+        - patientId
+        - doctorId
+        - ward
+        - admissionDate
+        - admittingDiagnosis
+
+    UpdateAdmissionBody:
+      type: object
+      properties:
+        bedId:
+          type: ["integer", "null"]
+        ward:
+          type: string
+        dischargeDate:
+          type: ["string", "null"]
+        status:
+          type: string
+        notes:
+          type: ["string", "null"]
+
+    AdmissionListResponse:
+      type: object
+      properties:
+        admissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Admission"
+        total:
+          type: integer
+      required:
+        - admissions
+        - total
+
+    # ── BED ──────────────────────────────────────────────────────────────────
+    Bed:
+      type: object
+      properties:
+        id:
+          type: integer
+        bedNumber:
+          type: string
+        ward:
+          type: string
+        wardId:
+          type: integer
+        floor:
+          type: ["string", "null"]
+        status:
+          type: string
+        patientId:
+          type: ["integer", "null"]
+        patientName:
+          type: ["string", "null"]
+        bedType:
+          type: string
+      required:
+        - id
+        - bedNumber
+        - ward
+        - wardId
+        - status
+        - bedType
+
+    UpdateBedBody:
+      type: object
+      properties:
+        status:
+          type: string
+        patientId:
+          type: ["integer", "null"]
+
+    BedListResponse:
+      type: object
+      properties:
+        beds:
+          type: array
+          items:
+            $ref: "#/components/schemas/Bed"
+        total:
+          type: integer
+      required:
+        - beds
+        - total
+
+    # ── LAB ORDER ─────────────────────────────────────────────────────────────
+    LabOrder:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        doctorId:
+          type: integer
+        doctorName:
+          type: string
+        consultationId:
+          type: ["integer", "null"]
+        testName:
+          type: string
+        testCode:
+          type: ["string", "null"]
+        category:
+          type: string
+        priority:
+          type: string
+        status:
+          type: string
+        result:
+          type: ["string", "null"]
+        normalRange:
+          type: ["string", "null"]
+        unit:
+          type: ["string", "null"]
+        resultNotes:
+          type: ["string", "null"]
+        orderedAt:
+          type: string
+        completedAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - patientId
+        - patientName
+        - doctorId
+        - doctorName
+        - testName
+        - category
+        - priority
+        - status
+        - orderedAt
+
+    CreateLabOrderBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        doctorId:
+          type: integer
+        consultationId:
+          type: ["integer", "null"]
+        testName:
+          type: string
+        testCode:
+          type: ["string", "null"]
+        category:
+          type: string
+        priority:
+          type: string
+      required:
+        - patientId
+        - doctorId
+        - testName
+        - category
+        - priority
+
+    UpdateLabOrderBody:
+      type: object
+      properties:
+        status:
+          type: string
+        result:
+          type: ["string", "null"]
+        normalRange:
+          type: ["string", "null"]
+        unit:
+          type: ["string", "null"]
+        resultNotes:
+          type: ["string", "null"]
+        completedAt:
+          type: ["string", "null"]
+
+    LabOrderListResponse:
+      type: object
+      properties:
+        labOrders:
+          type: array
+          items:
+            $ref: "#/components/schemas/LabOrder"
+        total:
+          type: integer
+      required:
+        - labOrders
+        - total
+
+    # ── PRESCRIPTION ─────────────────────────────────────────────────────────
+    Prescription:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        doctorId:
+          type: integer
+        doctorName:
+          type: string
+        consultationId:
+          type: ["integer", "null"]
+        drugName:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration:
+          type: string
+        route:
+          type: string
+        instructions:
+          type: ["string", "null"]
+        status:
+          type: string
+        createdAt:
+          type: string
+      required:
+        - id
+        - patientId
+        - patientName
+        - doctorId
+        - doctorName
+        - drugName
+        - dosage
+        - frequency
+        - duration
+        - route
+        - status
+        - createdAt
+
+    CreatePrescriptionBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        doctorId:
+          type: integer
+        consultationId:
+          type: ["integer", "null"]
+        drugName:
+          type: string
+        dosage:
+          type: string
+        frequency:
+          type: string
+        duration:
+          type: string
+        route:
+          type: string
+        instructions:
+          type: ["string", "null"]
+      required:
+        - patientId
+        - doctorId
+        - drugName
+        - dosage
+        - frequency
+        - duration
+        - route
+
+    PrescriptionListResponse:
+      type: object
+      properties:
+        prescriptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Prescription"
+        total:
+          type: integer
+      required:
+        - prescriptions
+        - total
+
+    # ── MEDICATION ───────────────────────────────────────────────────────────
+    Medication:
+      type: object
+      properties:
+        id:
+          type: integer
+        genericName:
+          type: string
+        brandName:
+          type: ["string", "null"]
+        category:
+          type: string
+        dosageForms:
+          type: string
+        strength:
+          type: string
+        stockQuantity:
+          type: integer
+        unit:
+          type: string
+        price:
+          type: number
+      required:
+        - id
+        - genericName
+        - category
+        - dosageForms
+        - strength
+        - stockQuantity
+        - unit
+        - price
+
+    MedicationListResponse:
+      type: object
+      properties:
+        medications:
+          type: array
+          items:
+            $ref: "#/components/schemas/Medication"
+        total:
+          type: integer
+      required:
+        - medications
+        - total
+
+    # ── INVOICE ──────────────────────────────────────────────────────────────
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: integer
+        invoiceNumber:
+          type: string
+        patientId:
+          type: integer
+        patientName:
+          type: string
+        admissionId:
+          type: ["integer", "null"]
+        consultationId:
+          type: ["integer", "null"]
+        subtotal:
+          type: number
+        discount:
+          type: number
+        tax:
+          type: number
+        total:
+          type: number
+        status:
+          type: string
+        paymentMethod:
+          type: ["string", "null"]
+        items:
+          type: string
+        createdAt:
+          type: string
+        paidAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - invoiceNumber
+        - patientId
+        - patientName
+        - subtotal
+        - discount
+        - tax
+        - total
+        - status
+        - items
+        - createdAt
+
+    CreateInvoiceBody:
+      type: object
+      properties:
+        patientId:
+          type: integer
+        admissionId:
+          type: ["integer", "null"]
+        consultationId:
+          type: ["integer", "null"]
+        items:
+          type: string
+        subtotal:
+          type: number
+        discount:
+          type: number
+        tax:
+          type: number
+        total:
+          type: number
+        paymentMethod:
+          type: ["string", "null"]
+      required:
+        - patientId
+        - items
+        - subtotal
+        - discount
+        - tax
+        - total
+
+    UpdateInvoiceBody:
+      type: object
+      properties:
+        status:
+          type: string
+        paymentMethod:
+          type: ["string", "null"]
+        paidAt:
+          type: ["string", "null"]
+
+    InvoiceListResponse:
+      type: object
+      properties:
+        invoices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Invoice"
+        total:
+          type: integer
+      required:
+        - invoices
+        - total
+
+    # ── EMERGENCY ────────────────────────────────────────────────────────────
+    EmergencyCase:
+      type: object
+      properties:
+        id:
+          type: integer
+        patientId:
+          type: ["integer", "null"]
+        patientName:
+          type: string
+        age:
+          type: ["integer", "null"]
+        gender:
+          type: string
+        chiefComplaint:
+          type: string
+        triage:
+          type: string
+        bpSystolic:
+          type: ["integer", "null"]
+        bpDiastolic:
+          type: ["integer", "null"]
+        pulse:
+          type: ["integer", "null"]
+        temperature:
+          type: ["number", "null"]
+        spo2:
+          type: ["integer", "null"]
+        assignedDoctorId:
+          type: ["integer", "null"]
+        assignedDoctorName:
+          type: ["string", "null"]
+        status:
+          type: string
+        disposition:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        arrivedAt:
+          type: string
+        resolvedAt:
+          type: ["string", "null"]
+      required:
+        - id
+        - patientName
+        - gender
+        - chiefComplaint
+        - triage
+        - status
+        - arrivedAt
+
+    CreateEmergencyCaseBody:
+      type: object
+      properties:
+        patientId:
+          type: ["integer", "null"]
+        patientName:
+          type: string
+        age:
+          type: ["integer", "null"]
+        gender:
+          type: string
+        chiefComplaint:
+          type: string
+        triage:
+          type: string
+        bpSystolic:
+          type: ["integer", "null"]
+        bpDiastolic:
+          type: ["integer", "null"]
+        pulse:
+          type: ["integer", "null"]
+        temperature:
+          type: ["number", "null"]
+        spo2:
+          type: ["integer", "null"]
+        notes:
+          type: ["string", "null"]
+      required:
+        - patientName
+        - gender
+        - chiefComplaint
+        - triage
+
+    UpdateEmergencyCaseBody:
+      type: object
+      properties:
+        triage:
+          type: string
+        assignedDoctorId:
+          type: ["integer", "null"]
+        status:
+          type: string
+        disposition:
+          type: ["string", "null"]
+        notes:
+          type: ["string", "null"]
+        resolvedAt:
+          type: ["string", "null"]
+
+    EmergencyCaseListResponse:
+      type: object
+      properties:
+        emergencyCases:
+          type: array
+          items:
+            $ref: "#/components/schemas/EmergencyCase"
+        total:
+          type: integer
+      required:
+        - emergencyCases
+        - total
+
+    # ── DASHBOARD ────────────────────────────────────────────────────────────
+    DashboardStats:
+      type: object
+      properties:
+        totalPatients:
+          type: integer
+        todayOpdCount:
+          type: integer
+        activeAdmissions:
+          type: integer
+        availableBeds:
+          type: integer
+        totalBeds:
+          type: integer
+        emergencyCasesToday:
+          type: integer
+        pendingLabOrders:
+          type: integer
+        todayRevenue:
+          type: number
+        monthRevenue:
+          type: number
+        criticalPatients:
+          type: integer
+      required:
+        - totalPatients
+        - todayOpdCount
+        - activeAdmissions
+        - availableBeds
+        - totalBeds
+        - emergencyCasesToday
+        - pendingLabOrders
+        - todayRevenue
+        - monthRevenue
+        - criticalPatients
+
+    BedSummaryItem:
+      type: object
+      properties:
+        ward:
+          type: string
+        total:
+          type: integer
+        occupied:
+          type: integer
+        available:
+          type: integer
+        reserved:
+          type: integer
+      required:
+        - ward
+        - total
+        - occupied
+        - available
+        - reserved
+
+    BedSummaryResponse:
+      type: object
+      properties:
+        summary:
+          type: array
+          items:
+            $ref: "#/components/schemas/BedSummaryItem"
+      required:
+        - summary
+
+    ActivityItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        type:
+          type: string
+        description:
+          type: string
+        patientName:
+          type: string
+        timestamp:
+          type: string
+        severity:
+          type: string
+      required:
+        - id
+        - type
+        - description
+        - patientName
+        - timestamp
+        - severity
+
+    RecentActivityResponse:
+      type: object
+      properties:
+        activities:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActivityItem"
+      required:
+        - activities
+
+    RevenueChartItem:
+      type: object
+      properties:
+        date:
+          type: string
+        revenue:
+          type: number
+        invoiceCount:
+          type: integer
+      required:
+        - date
+        - revenue
+        - invoiceCount
+
+    RevenueChartResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/RevenueChartItem"
+      required:
+        - data
