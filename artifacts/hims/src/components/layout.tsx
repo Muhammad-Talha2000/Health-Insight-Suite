@@ -3,37 +3,23 @@ import { Link, useLocation } from "wouter";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Bed, BriefcaseMedical, ChevronLeft, ChevronRight,
-  FlaskConical, LayoutDashboard, LogOut, Moon, Pill, Receipt, Stethoscope,
-  Sun, Users, Zap, Menu, X, Bell, Search, User
+  FlaskConical, LayoutDashboard, LogOut, Pill, Receipt, Stethoscope,
+  Users, Zap, Menu, Bell, Search, User
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const NAV = [
-  { path: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { path: "/patients", icon: Users, label: "Patients" },
-  { path: "/opd", icon: Stethoscope, label: "OPD Queue" },
-  { path: "/ipd", icon: Bed, label: "IPD / Beds" },
-  { path: "/emergency", icon: Zap, label: "Emergency" },
-  { path: "/pharmacy", icon: Pill, label: "Pharmacy" },
-  { path: "/laboratory", icon: FlaskConical, label: "Laboratory" },
-  { path: "/billing", icon: Receipt, label: "Billing" },
-  { path: "/analytics", icon: Activity, label: "Analytics" },
+  { path: "/dashboard",  icon: LayoutDashboard, label: "Dashboard" },
+  { path: "/patients",   icon: Users,           label: "Patients" },
+  { path: "/opd",        icon: Stethoscope,     label: "OPD Queue" },
+  { path: "/ipd",        icon: Bed,             label: "IPD / Beds" },
+  { path: "/emergency",  icon: Zap,             label: "Emergency" },
+  { path: "/pharmacy",   icon: Pill,            label: "Pharmacy" },
+  { path: "/laboratory", icon: FlaskConical,    label: "Laboratory" },
+  { path: "/billing",    icon: Receipt,         label: "Billing" },
+  { path: "/analytics",  icon: Activity,        label: "Analytics" },
 ];
-
-function ThemeToggle() {
-  const [dark, setDark] = useState(() => document.documentElement.classList.contains("dark"));
-  const toggle = () => {
-    document.documentElement.classList.toggle("dark");
-    setDark((d) => !d);
-  };
-  return (
-    <button onClick={toggle} className="p-2 rounded-lg hover:bg-sidebar-accent text-sidebar-foreground/60 hover:text-sidebar-foreground transition-colors">
-      {dark ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-    </button>
-  );
-}
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   const [collapsed, setCollapsed] = useState(false);
@@ -42,50 +28,73 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
 
   const Sidebar = ({ mobile = false }: { mobile?: boolean }) => (
-    <div className={cn(
-      "flex flex-col h-full bg-sidebar border-r border-sidebar-border transition-all duration-300",
-      mobile ? "w-64" : collapsed ? "w-16" : "w-60"
-    )}>
+    <div style={{
+      display: "flex", flexDirection: "column", height: "100%",
+      background: "#ffffff",
+      borderRight: "1px solid #e2e8f0",
+      width: mobile ? 240 : collapsed ? 64 : 232,
+      transition: "width 0.25s",
+    }}>
       {/* Logo */}
-      <div className={cn("flex items-center gap-3 px-4 h-14 border-b border-sidebar-border shrink-0", collapsed && !mobile && "px-3 justify-center")}>
-        <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center shrink-0">
-          <Activity className="w-4 h-4 text-primary-foreground" />
+      <div style={{
+        display: "flex", alignItems: "center", gap: "0.625rem",
+        padding: collapsed && !mobile ? "0 0.75rem" : "0 1rem",
+        height: 56, borderBottom: "1px solid #e2e8f0", flexShrink: 0,
+        justifyContent: collapsed && !mobile ? "center" : "flex-start",
+      }}>
+        <div style={{ width: 30, height: 30, borderRadius: 8, background: "#0d9488", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+          <Activity size={16} color="#fff" />
         </div>
         {(!collapsed || mobile) && (
-          <div className="min-w-0">
-            <div className="text-sidebar-foreground font-bold text-sm leading-none truncate">MediCore</div>
-            <div className="text-sidebar-foreground/40 text-[10px]">HIMS 2026</div>
+          <div style={{ minWidth: 0, flex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: "0.875rem", color: "#0f2027", lineHeight: 1 }}>MediCore</div>
+            <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>HIMS 2026</div>
           </div>
         )}
         {!mobile && (
-          <button onClick={() => setCollapsed(!collapsed)} className="ml-auto text-sidebar-foreground/40 hover:text-sidebar-foreground transition-colors">
-            {collapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: "0.25rem", display: "flex", marginLeft: "auto" }}
+          >
+            {collapsed ? <ChevronRight size={15} /> : <ChevronLeft size={15} />}
           </button>
         )}
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-2 overflow-y-auto scrollbar-thin">
+      <nav style={{ flex: 1, padding: "0.5rem 0.5rem", overflowY: "auto" }}>
         {NAV.map((item) => {
           const active = location === item.path || location.startsWith(item.path + "/");
           return (
             <Link key={item.path} href={item.path} onClick={() => setMobileOpen(false)}>
-              <div className={cn(
-                "flex items-center gap-3 mx-2 my-0.5 px-3 py-2.5 rounded-lg cursor-pointer transition-colors relative group",
-                active
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground"
-                  : "text-sidebar-foreground/60 hover:bg-sidebar-accent hover:text-sidebar-foreground",
-                collapsed && !mobile && "justify-center px-2"
-              )}>
-                <item.icon className="w-4 h-4 shrink-0" />
-                {(!collapsed || mobile) && (
-                  <span className="text-sm font-medium">{item.label}</span>
-                )}
-                {active && (
-                  <motion.div layoutId="nav-indicator" className="absolute left-0 top-0 bottom-0 w-0.5 rounded-r bg-primary-foreground/60" />
-                )}
+              <div style={{
+                display: "flex", alignItems: "center",
+                gap: "0.625rem",
+                padding: collapsed && !mobile ? "0.625rem" : "0.625rem 0.75rem",
+                borderRadius: "0.625rem",
+                margin: "0.125rem 0",
+                cursor: "pointer",
+                justifyContent: collapsed && !mobile ? "center" : "flex-start",
+                background: active ? "#0d9488" : "transparent",
+                color: active ? "#fff" : "#4b5563",
+                fontWeight: active ? 700 : 500,
+                fontSize: "0.85rem",
+                transition: "background 0.15s, color 0.15s",
+                position: "relative",
+              }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLDivElement).style.background = "#f0fdf9"; (e.currentTarget as HTMLDivElement).style.color = active ? "#fff" : "#0d9488"; }}
+              onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLDivElement).style.background = "transparent"; (e.currentTarget as HTMLDivElement).style.color = active ? "#fff" : "#4b5563"; } }}
+              >
+                <item.icon size={17} style={{ flexShrink: 0 }} />
+                {(!collapsed || mobile) && <span>{item.label}</span>}
+                {/* Tooltip for collapsed */}
                 {collapsed && !mobile && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-popover text-popover-foreground text-xs rounded shadow-lg border border-border whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-opacity">
+                  <div style={{
+                    position: "absolute", left: "calc(100% + 8px)", top: "50%", transform: "translateY(-50%)",
+                    background: "#0f2027", color: "#fff", fontSize: "0.75rem", padding: "0.3rem 0.625rem",
+                    borderRadius: "0.375rem", whiteSpace: "nowrap", pointerEvents: "none", zIndex: 50,
+                    opacity: 0, transition: "opacity 0.15s",
+                  }} className="nav-tooltip">
                     {item.label}
                   </div>
                 )}
@@ -95,47 +104,57 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         })}
       </nav>
 
-      {/* Footer */}
-      <div className={cn("border-t border-sidebar-border p-3 shrink-0", collapsed && !mobile && "p-2")}>
+      {/* User footer */}
+      <div style={{ borderTop: "1px solid #e2e8f0", padding: collapsed && !mobile ? "0.75rem 0.5rem" : "0.75rem", flexShrink: 0 }}>
         {(!collapsed || mobile) && user && (
-          <div className="flex items-center gap-2 mb-2 px-2">
-            <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center shrink-0">
-              <User className="w-3.5 h-3.5 text-primary-foreground" />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "0.625rem", padding: "0 0.25rem" }}>
+            <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#0d9488", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+              <User size={14} color="#fff" />
             </div>
-            <div className="min-w-0 flex-1">
-              <div className="text-sidebar-foreground text-xs font-medium truncate">{user.name}</div>
-              <div className="text-sidebar-foreground/40 text-[10px] truncate">{user.role}</div>
+            <div style={{ minWidth: 0, flex: 1 }}>
+              <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f2027", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user.name}</div>
+              <div style={{ fontSize: "0.65rem", color: "#9ca3af", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{user.role}</div>
             </div>
           </div>
         )}
-        <div className={cn("flex items-center gap-1", collapsed && !mobile && "justify-center flex-col")}>
-          <ThemeToggle />
-          <button onClick={logout} className="p-2 rounded-lg hover:bg-destructive/20 text-sidebar-foreground/60 hover:text-destructive transition-colors flex items-center gap-1.5">
-            <LogOut className="w-4 h-4" />
-            {(!collapsed || mobile) && <span className="text-xs">Logout</span>}
-          </button>
-        </div>
+        <button onClick={logout}
+          style={{
+            display: "flex", alignItems: "center", gap: "0.5rem",
+            width: "100%", padding: "0.5rem 0.625rem", borderRadius: "0.5rem",
+            background: "none", border: "none", cursor: "pointer",
+            color: "#9ca3af", fontSize: "0.8rem", fontWeight: 600,
+            justifyContent: collapsed && !mobile ? "center" : "flex-start",
+            transition: "background 0.15s, color 0.15s",
+          }}
+          onMouseEnter={e => { (e.currentTarget).style.background = "#fef2f2"; (e.currentTarget).style.color = "#dc2626"; }}
+          onMouseLeave={e => { (e.currentTarget).style.background = "transparent"; (e.currentTarget).style.color = "#9ca3af"; }}>
+          <LogOut size={15} />
+          {(!collapsed || mobile) && <span>Logout</span>}
+        </button>
       </div>
+
+      <style>{`
+        .nav-item:hover .nav-tooltip { opacity: 1 !important; }
+      `}</style>
     </div>
   );
 
   return (
-    <div className="flex h-screen overflow-hidden bg-background">
+    <div style={{ display: "flex", height: "100vh", overflow: "hidden", background: "#f8fafc" }}>
       {/* Desktop Sidebar */}
-      <div className="hidden lg:flex h-full shrink-0">
+      <div className="hidden lg:flex" style={{ height: "100%", flexShrink: 0 }}>
         <Sidebar />
       </div>
 
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile overlay */}
       <AnimatePresence>
         {mobileOpen && (
           <>
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              className="fixed inset-0 z-40 bg-black/50 lg:hidden"
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div initial={{ x: -280 }} animate={{ x: 0 }} exit={{ x: -280 }} transition={{ type: "spring", damping: 25 }}
-              className="fixed left-0 top-0 bottom-0 z-50 lg:hidden">
+              style={{ position: "fixed", inset: 0, zIndex: 40, background: "rgba(15,32,39,0.4)" }}
+              onClick={() => setMobileOpen(false)} className="lg:hidden" />
+            <motion.div initial={{ x: -260 }} animate={{ x: 0 }} exit={{ x: -260 }} transition={{ type: "spring", damping: 26 }}
+              style={{ position: "fixed", left: 0, top: 0, bottom: 0, zIndex: 50 }} className="lg:hidden">
               <Sidebar mobile />
             </motion.div>
           </>
@@ -143,37 +162,45 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       </AnimatePresence>
 
       {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Top bar */}
-        <header className="h-14 border-b border-border flex items-center px-4 gap-3 shrink-0 bg-card">
-          <button onClick={() => setMobileOpen(true)} className="lg:hidden p-2 rounded-lg hover:bg-muted text-muted-foreground">
-            <Menu className="w-4 h-4" />
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* Topbar */}
+        <header style={{
+          height: 56, borderBottom: "1px solid #e2e8f0", display: "flex", alignItems: "center",
+          padding: "0 1.25rem", gap: "0.75rem", flexShrink: 0, background: "#ffffff",
+          boxShadow: "0 1px 3px rgba(15,32,39,0.04)",
+        }}>
+          <button onClick={() => setMobileOpen(true)} className="lg:hidden"
+            style={{ background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: "0.375rem", display: "flex" }}>
+            <Menu size={18} />
           </button>
 
-          <div className="flex items-center gap-2 flex-1 max-w-md">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-              <input
-                type="search"
-                placeholder="Search patients, MR#, staff…"
-                className="w-full h-8 pl-9 pr-3 bg-muted rounded-lg text-sm border border-border focus:outline-none focus:border-primary transition-colors"
-              />
-            </div>
+          {/* Search */}
+          <div style={{ flex: 1, maxWidth: "380px", position: "relative" }}>
+            <Search size={14} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", color: "#9ca3af" }} />
+            <input type="search" placeholder="Search patients, MR#, staff…"
+              style={{
+                width: "100%", height: 34, paddingLeft: 30, paddingRight: 10, borderRadius: "0.625rem",
+                border: "1.5px solid #e2e8f0", fontSize: "0.82rem", color: "#0f2027", outline: "none",
+                background: "#f8fafc", boxSizing: "border-box", transition: "border-color 0.15s",
+              }}
+              onFocus={e => (e.target.style.borderColor = "#0d9488")}
+              onBlur={e => (e.target.style.borderColor = "#e2e8f0")}
+            />
           </div>
 
-          <div className="ml-auto flex items-center gap-2">
-            <button className="relative p-2 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors">
-              <Bell className="w-4 h-4" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full" />
+          <div style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+            <button style={{ position: "relative", background: "none", border: "none", cursor: "pointer", color: "#9ca3af", padding: "0.375rem", display: "flex" }}>
+              <Bell size={17} />
+              <span style={{ position: "absolute", top: 4, right: 4, width: 7, height: 7, background: "#dc2626", borderRadius: "50%", border: "1.5px solid #fff" }} />
             </button>
             {user && (
-              <div className="flex items-center gap-2 pl-2 border-l border-border">
-                <div className="w-7 h-7 rounded-full bg-primary flex items-center justify-center">
-                  <User className="w-3.5 h-3.5 text-primary-foreground" />
+              <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", paddingLeft: "0.75rem", borderLeft: "1px solid #e2e8f0" }}>
+                <div style={{ width: 30, height: 30, borderRadius: "50%", background: "#0d9488", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <User size={14} color="#fff" />
                 </div>
                 <div className="hidden sm:block">
-                  <div className="text-xs font-medium text-foreground leading-none">{user.name}</div>
-                  <div className="text-[10px] text-muted-foreground">{user.role}</div>
+                  <div style={{ fontSize: "0.78rem", fontWeight: 700, color: "#0f2027", lineHeight: 1 }}>{user.name}</div>
+                  <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>{user.role}</div>
                 </div>
               </div>
             )}
@@ -181,7 +208,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 overflow-auto bg-background">
+        <main style={{ flex: 1, overflowY: "auto", background: "#f8fafc" }}>
           {children}
         </main>
       </div>

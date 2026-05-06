@@ -1,19 +1,29 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, ArrowLeft, Eye, EyeOff, LogIn, Shield, Stethoscope } from "lucide-react";
+import {
+  Activity, ArrowLeft, Eye, EyeOff, LogIn, Bed, Stethoscope,
+  FlaskConical, CheckCircle
+} from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 const DEMO_CREDS = [
-  { username: "admin", label: "Admin" },
-  { username: "doctor", label: "Doctor" },
-  { username: "nurse", label: "Nurse" },
-  { username: "pharmacist", label: "Pharmacist" },
+  { username: "admin",      label: "Admin",      color: "#0d9488" },
+  { username: "doctor",     label: "Doctor",     color: "#3b82f6" },
+  { username: "nurse",      label: "Nurse",      color: "#7c3aed" },
+  { username: "pharmacist", label: "Pharmacist", color: "#ea580c" },
 ];
+
+const C = {
+  teal:      "#0d9488",
+  tealLight: "#ccfbf1",
+  navy:      "#0f2027",
+  body:      "#4b5563",
+  muted:     "#9ca3af",
+  border:    "#e2e8f0",
+  mint:      "#e8faf6",
+  white:     "#ffffff",
+};
 
 export default function Login() {
   const { login } = useAuth();
@@ -30,186 +40,216 @@ export default function Login() {
     setError("");
     await new Promise((r) => setTimeout(r, 600));
     const ok = login(username, password);
-    if (!ok) {
-      setError("Invalid credentials. Use demo password: hims2026");
-    }
+    if (!ok) setError("Invalid credentials. Use demo password: hims2026");
     setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Left Panel */}
-      <div className="hidden lg:flex flex-col w-1/2 bg-sidebar relative overflow-hidden">
-        {/* Grid overlay */}
-        <div className="absolute inset-0 opacity-5"
-          style={{ backgroundImage: "linear-gradient(hsl(196 100% 47%) 1px, transparent 1px), linear-gradient(90deg, hsl(196 100% 47%) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-        {/* Gradient accents */}
-        <div className="absolute top-0 left-0 w-96 h-96 bg-primary/20 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/20 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+    <div style={{ minHeight: "100vh", display: "flex", fontFamily: "'Inter', system-ui, sans-serif", background: C.mint }}>
 
-        <div className="relative z-10 flex flex-col h-full p-12">
-          {/* Logo */}
-          <div className="flex items-center gap-3 mb-auto">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-              <Activity className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <div>
-              <div className="text-sidebar-foreground font-bold text-lg leading-none">MediCore HIMS</div>
-              <div className="text-sidebar-foreground/50 text-xs">Hospital Information System</div>
-            </div>
+      {/* ── Left panel – mint illustrated side ── */}
+      <div style={{
+        display: "none",
+        width: "52%",
+        background: `linear-gradient(150deg, #b2f0e8 0%, #d1faf3 40%, ${C.mint} 100%)`,
+        flexDirection: "column",
+        padding: "3rem",
+        position: "relative",
+        overflow: "hidden",
+      }} className="login-left">
+
+        {/* Subtle circles */}
+        <div style={{ position: "absolute", top: -80, right: -80, width: 320, height: 320, borderRadius: "50%", background: "rgba(13,148,136,0.1)" }} />
+        <div style={{ position: "absolute", bottom: -60, left: -60, width: 240, height: 240, borderRadius: "50%", background: "rgba(13,148,136,0.08)" }} />
+
+        {/* Logo */}
+        <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "auto" }}>
+          <div style={{ width: 42, height: 42, borderRadius: 12, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(13,148,136,0.35)" }}>
+            <Activity size={22} color="#fff" />
           </div>
-
-          {/* Main copy */}
-          <div className="my-auto">
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}>
-              <h1 className="text-4xl font-bold text-white leading-tight mb-4">
-                Next-Generation<br />
-                <span className="text-primary">Hospital Management</span><br />
-                for 2026
-              </h1>
-              <p className="text-sidebar-foreground/60 text-lg leading-relaxed">
-                Integrated patient care, real-time analytics, and seamless workflows — built for the modern healthcare environment.
-              </p>
-            </motion.div>
-
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-              className="mt-10 grid grid-cols-2 gap-4">
-              {[
-                { icon: Stethoscope, label: "Patient Records", value: "8,400+" },
-                { icon: Activity, label: "Daily OPD", value: "240+" },
-                { icon: Shield, label: "Bed Occupancy", value: "87%" },
-                { icon: LogIn, label: "Modules", value: "12" },
-              ].map((stat) => (
-                <div key={stat.label} className="bg-sidebar-accent/60 border border-sidebar-border rounded-xl p-4">
-                  <stat.icon className="w-4 h-4 text-primary mb-2" />
-                  <div className="text-2xl font-bold text-white">{stat.value}</div>
-                  <div className="text-xs text-sidebar-foreground/50">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div>
-          </div>
-
-          <div className="text-sidebar-foreground/30 text-xs">
-            © 2026 MediCore HIMS. All rights reserved.
+          <div>
+            <div style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy, lineHeight: 1 }}>MediCore <span style={{ color: C.teal }}>HIMS</span></div>
+            <div style={{ fontSize: "0.7rem", color: C.body }}>Hospital Information System</div>
           </div>
         </div>
+
+        {/* Headline */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55 }}
+          style={{ marginTop: "auto", marginBottom: "2rem" }}>
+          <h1 style={{ fontSize: "2.6rem", fontWeight: 900, color: C.navy, lineHeight: 1.15, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
+            Next-Generation<br />
+            <span style={{ color: C.teal }}>Hospital Management</span><br />
+            for 2026
+          </h1>
+          <p style={{ color: C.body, lineHeight: 1.7, fontSize: "1rem", maxWidth: "380px" }}>
+            Integrated patient care, real-time analytics, and seamless workflows — built for the modern healthcare environment.
+          </p>
+        </motion.div>
+
+        {/* Stat mini-cards */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15 }}
+          style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.875rem", marginBottom: "2rem" }}>
+          {[
+            { icon: Stethoscope, label: "Patient Records", value: "8,400+", color: "#3b82f6", bg: "#eff6ff" },
+            { icon: Activity,    label: "Daily OPD",       value: "240+",   color: C.teal, bg: C.tealLight },
+            { icon: Bed,         label: "Bed Occupancy",   value: "87%",    color: "#7c3aed", bg: "#f5f3ff" },
+            { icon: FlaskConical, label: "Modules",        value: "10",     color: "#ea580c", bg: "#fff7ed" },
+          ].map((s) => (
+            <div key={s.label} style={{ background: C.white, borderRadius: "0.875rem", padding: "1rem", border: `1px solid ${C.border}`, boxShadow: "0 2px 8px rgba(15,32,39,0.06)" }}>
+              <div style={{ width: 32, height: 32, borderRadius: "0.5rem", background: s.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.5rem" }}>
+                <s.icon size={16} color={s.color} />
+              </div>
+              <div style={{ fontWeight: 800, fontSize: "1.25rem", color: C.navy }}>{s.value}</div>
+              <div style={{ fontSize: "0.72rem", color: C.muted }}>{s.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Trust badges */}
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.875rem" }}>
+          {["HIPAA-Ready", "Real-Time Data", "Role-Based Access", "10 Modules"].map((t) => (
+            <div key={t} style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: C.body }}>
+              <CheckCircle size={13} color={C.teal} /> {t}
+            </div>
+          ))}
+        </div>
+
+        <p style={{ color: C.muted, fontSize: "0.7rem", marginTop: "2rem" }}>© 2026 MediCore HIMS. All rights reserved.</p>
       </div>
 
-      {/* Right Panel — Login Form */}
-      <div className="flex-1 flex items-center justify-center p-8">
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          className="w-full max-w-md"
-        >
-          {/* Back to home */}
-          <button
-            onClick={() => setLocation("/")}
-            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to home
+      {/* ── Right panel – form ── */}
+      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2rem", background: C.white }}>
+        <motion.div initial={{ opacity: 0, x: 24 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }}
+          style={{ width: "100%", maxWidth: "420px" }}>
+
+          {/* Back link */}
+          <button onClick={() => setLocation("/")}
+            style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.8rem", color: C.body, background: "none", border: "none", cursor: "pointer", marginBottom: "2.5rem", padding: 0 }}
+            onMouseEnter={e => (e.currentTarget.style.color = C.teal)}
+            onMouseLeave={e => (e.currentTarget.style.color = C.body)}>
+            <ArrowLeft size={14} /> Back to home
           </button>
 
           {/* Mobile logo */}
-          <div className="flex lg:hidden items-center gap-2 mb-8">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
-              <Activity className="w-4 h-4 text-primary-foreground" />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "2rem" }} className="login-mobile-logo">
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={18} color="#fff" />
             </div>
-            <span className="font-bold text-foreground">MediCore HIMS</span>
+            <span style={{ fontWeight: 800, color: C.navy }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 
-          <div className="mb-8">
-            <h2 className="text-2xl font-bold text-foreground mb-1">Welcome back</h2>
-            <p className="text-muted-foreground">Sign in to your account to continue</p>
+          <div style={{ marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "1.75rem", fontWeight: 900, color: C.navy, marginBottom: "0.375rem", letterSpacing: "-0.02em" }}>Welcome back</h2>
+            <p style={{ color: C.body, fontSize: "0.9rem" }}>Sign in to your account to continue</p>
           </div>
 
-          {/* Demo quick-select */}
-          <div className="mb-6">
-            <p className="text-xs text-muted-foreground mb-2 font-medium uppercase tracking-wider">Quick Demo Login</p>
-            <div className="flex gap-2 flex-wrap">
+          {/* Quick demo select */}
+          <div style={{ marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.7rem", color: C.muted, fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", marginBottom: "0.625rem" }}>
+              Quick Demo Login
+            </p>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
               {DEMO_CREDS.map((c) => (
-                <button
-                  key={c.username}
-                  type="button"
+                <button key={c.username} type="button"
                   onClick={() => { setUsername(c.username); setPassword("hims2026"); }}
-                  className={cn(
-                    "text-xs px-3 py-1.5 rounded-lg border transition-colors",
-                    username === c.username
-                      ? "bg-primary text-primary-foreground border-primary"
-                      : "bg-muted text-muted-foreground border-border hover:border-primary/50"
-                  )}
-                >
+                  style={{
+                    fontSize: "0.8rem", padding: "0.4rem 0.875rem", borderRadius: "0.5rem", cursor: "pointer", transition: "all 0.15s",
+                    border: username === c.username ? `1.5px solid ${c.color}` : `1.5px solid ${C.border}`,
+                    background: username === c.username ? c.color + "15" : C.white,
+                    color: username === c.username ? c.color : C.body,
+                    fontWeight: username === c.username ? 700 : 500,
+                  }}>
                   {c.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
-              <Input
-                id="username"
-                type="text"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                placeholder="Enter username"
-                className="h-11"
-                required
+          {/* Form */}
+          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: C.navy, marginBottom: "0.375rem" }}>
+                Username
+              </label>
+              <input
+                type="text" value={username} onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter username" required
+                style={{
+                  width: "100%", height: "44px", padding: "0 0.875rem", borderRadius: "0.625rem",
+                  border: `1.5px solid ${C.border}`, fontSize: "0.9rem", color: C.navy,
+                  outline: "none", transition: "border-color 0.15s", boxSizing: "border-box", background: C.white,
+                }}
+                onFocus={e => (e.target.style.borderColor = C.teal)}
+                onBlur={e => (e.target.style.borderColor = C.border)}
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <div className="relative">
-                <Input
-                  id="password"
-                  type={showPassword ? "text" : "password"}
-                  value={password}
+            <div>
+              <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: C.navy, marginBottom: "0.375rem" }}>
+                Password
+              </label>
+              <div style={{ position: "relative" }}>
+                <input
+                  type={showPassword ? "text" : "password"} value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Enter password"
-                  className="h-11 pr-10"
-                  required
+                  placeholder="Enter password" required
+                  style={{
+                    width: "100%", height: "44px", padding: "0 2.75rem 0 0.875rem", borderRadius: "0.625rem",
+                    border: `1.5px solid ${C.border}`, fontSize: "0.9rem", color: C.navy,
+                    outline: "none", transition: "border-color 0.15s", boxSizing: "border-box", background: C.white,
+                  }}
+                  onFocus={e => (e.target.style.borderColor = C.teal)}
+                  onBlur={e => (e.target.style.borderColor = C.border)}
                 />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                <button type="button" onClick={() => setShowPassword(!showPassword)}
+                  style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", color: C.muted, display: "flex" }}>
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
             </div>
 
             {error && (
-              <div className="text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-lg px-3 py-2">
+              <div style={{ fontSize: "0.82rem", color: "#dc2626", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "0.5rem", padding: "0.75rem 0.875rem" }}>
                 {error}
               </div>
             )}
 
-            <Button type="submit" className="w-full h-11" disabled={loading}>
+            <button type="submit" disabled={loading}
+              style={{
+                width: "100%", height: "46px", borderRadius: "0.75rem", border: "none", cursor: loading ? "not-allowed" : "pointer",
+                background: loading ? "#5eead4" : C.teal, color: C.white, fontWeight: 700, fontSize: "0.95rem",
+                display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
+                transition: "background 0.18s", boxShadow: "0 4px 14px rgba(13,148,136,0.3)", marginTop: "0.25rem",
+              }}>
               {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-primary-foreground/30 border-t-primary-foreground rounded-full animate-spin" />
+                <>
+                  <span style={{ width: 16, height: 16, border: "2px solid rgba(255,255,255,0.35)", borderTopColor: "#fff", borderRadius: "50%", animation: "spin 0.7s linear infinite", display: "inline-block" }} />
                   Signing in…
-                </span>
+                </>
               ) : (
-                <span className="flex items-center gap-2">
-                  <LogIn className="w-4 h-4" />
-                  Sign in
-                </span>
+                <><LogIn size={16} /> Sign in</>
               )}
-            </Button>
+            </button>
           </form>
 
-          <div className="mt-6 p-4 bg-muted/50 rounded-xl border border-border">
-            <p className="text-xs text-muted-foreground">
-              <span className="font-semibold text-foreground">Demo credentials:</span> Use any username above with password <code className="bg-background px-1 py-0.5 rounded text-primary">hims2026</code>
+          {/* Demo hint */}
+          <div style={{ marginTop: "1.5rem", background: "#f0fdf9", border: `1px solid #99f6e4`, borderRadius: "0.75rem", padding: "0.875rem 1rem" }}>
+            <p style={{ fontSize: "0.78rem", color: C.body, margin: 0 }}>
+              <span style={{ fontWeight: 700, color: C.navy }}>Demo credentials:</span>{" "}
+              Use any role above with password{" "}
+              <code style={{ background: C.white, padding: "0.15rem 0.4rem", borderRadius: "0.3rem", color: C.teal, fontWeight: 700, border: `1px solid ${C.border}`, fontSize: "0.82rem" }}>hims2026</code>
             </p>
           </div>
         </motion.div>
       </div>
+
+      <style>{`
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @media (min-width: 1024px) {
+          .login-left { display: flex !important; }
+          .login-mobile-logo { display: none !important; }
+        }
+      `}</style>
     </div>
   );
 }

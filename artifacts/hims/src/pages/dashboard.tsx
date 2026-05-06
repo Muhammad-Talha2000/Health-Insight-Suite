@@ -2,16 +2,26 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import {
   Activity, AlertTriangle, Bed, BedDouble, Clock, DollarSign,
-  FlaskConical, Stethoscope, TrendingUp, Users, Zap
+  FlaskConical, Stethoscope, TrendingUp, TrendingDown, Users, Zap,
+  ArrowUpRight
 } from "lucide-react";
 import {
   AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid,
   Tooltip, ResponsiveContainer, PieChart, Pie, Cell
 } from "recharts";
-import { formatCurrency, formatDateTime, statusBadge, triageDot } from "@/lib/utils";
-import { cn } from "@/lib/utils";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+const C = {
+  teal:  "#0d9488",
+  navy:  "#0f2027",
+  body:  "#4b5563",
+  muted: "#9ca3af",
+  border:"#e2e8f0",
+  bg:    "#f8fafc",
+  white: "#ffffff",
+};
 
 function useDashboard() {
   return useQuery({
@@ -20,14 +30,12 @@ function useDashboard() {
     refetchInterval: 30000,
   });
 }
-
 function useBedSummary() {
   return useQuery({
     queryKey: ["bed-summary"],
     queryFn: () => fetch(`${BASE}/api/dashboard/bed-summary`).then((r) => r.json()),
   });
 }
-
 function useRecentActivity() {
   return useQuery({
     queryKey: ["recent-activity"],
@@ -35,7 +43,6 @@ function useRecentActivity() {
     refetchInterval: 15000,
   });
 }
-
 function useRevenueChart() {
   return useQuery({
     queryKey: ["revenue-chart"],
@@ -43,165 +50,195 @@ function useRevenueChart() {
   });
 }
 
-function StatCard({ icon: Icon, label, value, sub, color, pulse }: {
+function StatCard({ icon: Icon, label, value, sub, iconColor, iconBg, trend }: {
   icon: React.ElementType;
   label: string;
   value: string | number;
   sub?: string;
-  color: string;
-  pulse?: boolean;
+  iconColor: string;
+  iconBg: string;
+  trend?: { value: string; up: boolean };
 }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="bg-card border border-card-border rounded-xl p-4 hover:border-primary/30 transition-colors"
+    <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
+      style={{
+        background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem",
+        padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)",
+        transition: "box-shadow 0.2s, transform 0.2s", cursor: "default",
+      }}
+      whileHover={{ y: -2, boxShadow: "0 6px 20px rgba(15,32,39,0.09)" } as any}
     >
-      <div className="flex items-start justify-between">
-        <div className={cn("w-10 h-10 rounded-lg flex items-center justify-center", color)}>
-          <Icon className="w-5 h-5" />
-          {pulse && <span className="absolute w-2 h-2 bg-red-500 rounded-full top-0 right-0 animate-ping" />}
+      <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: "0.875rem" }}>
+        <div style={{ width: 40, height: 40, borderRadius: "0.625rem", background: iconBg, display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Icon size={20} color={iconColor} />
         </div>
-        <TrendingUp className="w-3.5 h-3.5 text-muted-foreground/30" />
+        {trend && (
+          <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", fontSize: "0.72rem", fontWeight: 700, color: trend.up ? "#059669" : "#dc2626" }}>
+            {trend.up ? <TrendingUp size={12} /> : <TrendingDown size={12} />}
+            {trend.value}
+          </div>
+        )}
       </div>
-      <div className="mt-3">
-        <div className="text-2xl font-bold text-foreground">{value}</div>
-        <div className="text-sm text-muted-foreground">{label}</div>
-        {sub && <div className="text-xs text-muted-foreground/70 mt-0.5">{sub}</div>}
-      </div>
+      <div style={{ fontSize: "1.75rem", fontWeight: 900, color: C.navy, lineHeight: 1 }}>{value}</div>
+      <div style={{ fontSize: "0.8rem", color: C.body, marginTop: "0.3rem" }}>{label}</div>
+      {sub && <div style={{ fontSize: "0.72rem", color: C.muted, marginTop: "0.15rem" }}>{sub}</div>}
     </motion.div>
   );
 }
 
-const TRIAGE_COLORS = {
-  immediate: "#dc2626",
-  "very-urgent": "#f97316",
-  urgent: "#eab308",
-  "semi-urgent": "#22c55e",
-  "non-urgent": "#3b82f6",
+const TRIAGE_COLORS: Record<string, string> = {
+  immediate:    "#dc2626",
+  "very-urgent":"#ea580c",
+  urgent:       "#ca8a04",
+  "semi-urgent":"#16a34a",
+  "non-urgent": "#2563eb",
+};
+
+const CHART_TOOLTIP_STYLE = {
+  background: "#fff",
+  border: `1px solid ${C.border}`,
+  borderRadius: "0.5rem",
+  fontSize: 12,
+  boxShadow: "0 4px 12px rgba(15,32,39,0.1)",
 };
 
 export default function Dashboard() {
   const { data: stats, isLoading } = useDashboard();
-  const { data: bedData } = useBedSummary();
-  const { data: activityData } = useRecentActivity();
-  const { data: revenueData } = useRevenueChart();
+  const { data: bedData }          = useBedSummary();
+  const { data: activityData }     = useRecentActivity();
+  const { data: revenueData }      = useRevenueChart();
 
-  const bedSummary = bedData?.summary ?? [];
-  const activities = activityData?.activities ?? [];
-  const chartData = (revenueData?.data ?? []).map((d: any) => ({
-    ...d,
-    revenue: d.revenue / 1000,
-  }));
+  const bedSummary  = bedData?.summary ?? [];
+  const activities  = activityData?.activities ?? [];
+  const chartData   = (revenueData?.data ?? []).map((d: any) => ({ ...d, revenue: d.revenue / 1000 }));
 
   const bedPieData = bedSummary.map((w: any) => [
-    { name: "Occupied", value: w.occupied, color: "#3b82f6" },
+    { name: "Occupied",  value: w.occupied,  color: "#0d9488" },
     { name: "Available", value: w.available, color: "#22c55e" },
-    { name: "Reserved", value: w.reserved, color: "#f59e0b" },
+    { name: "Reserved",  value: w.reserved,  color: "#f59e0b" },
   ]).flat().reduce((acc: any[], item: any) => {
-    const existing = acc.find((a) => a.name === item.name);
-    if (existing) { existing.value += item.value; } else { acc.push({ ...item }); }
+    const ex = acc.find((a) => a.name === item.name);
+    if (ex) ex.value += item.value; else acc.push({ ...item });
     return acc;
   }, []);
 
-  const totalBeds = bedSummary.reduce((s: number, w: any) => s + w.total, 0);
+  const totalBeds    = bedSummary.reduce((s: number, w: any) => s + w.total, 0);
   const occupiedBeds = bedSummary.reduce((s: number, w: any) => s + w.occupied, 0);
   const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <div className="w-8 h-8 border-2 border-primary/30 border-t-primary rounded-full animate-spin" />
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", height: "100%", background: C.bg }}>
+        <div style={{ width: 36, height: 36, border: "3px solid #ccfbf1", borderTopColor: C.teal, borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
 
   return (
-    <div className="p-6 space-y-6">
+    <div style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1.25rem", minHeight: "100%" }}>
+
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem" }}>
         <div>
-          <h1 className="text-xl font-bold text-foreground">Command Dashboard</h1>
-          <p className="text-sm text-muted-foreground">
+          <h1 style={{ fontSize: "1.25rem", fontWeight: 900, color: C.navy, margin: 0 }}>Command Dashboard</h1>
+          <p style={{ fontSize: "0.82rem", color: C.muted, marginTop: "0.2rem" }}>
             {new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
           </p>
         </div>
         {stats?.criticalPatients > 0 && (
-          <div className="flex items-center gap-2 px-3 py-2 bg-destructive/10 border border-destructive/30 rounded-lg">
-            <AlertTriangle className="w-4 h-4 text-destructive animate-pulse" />
-            <span className="text-sm text-destructive font-medium">{stats.criticalPatients} Critical Patient{stats.criticalPatients !== 1 ? "s" : ""}</span>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.5rem 0.875rem", background: "#fef2f2", border: "1px solid #fecaca", borderRadius: "0.625rem" }}>
+            <AlertTriangle size={15} color="#dc2626" style={{ animation: "pulse 1.5s infinite" }} />
+            <span style={{ fontSize: "0.82rem", color: "#dc2626", fontWeight: 700 }}>
+              {stats.criticalPatients} Critical Patient{stats.criticalPatients !== 1 ? "s" : ""}
+            </span>
           </div>
         )}
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-4">
-        <StatCard icon={Users} label="Total Patients" value={stats?.totalPatients ?? 0} color="bg-blue-500/15 text-blue-500" />
-        <StatCard icon={Stethoscope} label="Today's OPD" value={stats?.todayOpdCount ?? 0} sub="appointments" color="bg-primary/15 text-primary" />
-        <StatCard icon={BedDouble} label="Active Admissions" value={stats?.activeAdmissions ?? 0} color="bg-purple-500/15 text-purple-500" />
-        <StatCard icon={Zap} label="Emergency Today" value={stats?.emergencyCasesToday ?? 0} color="bg-orange-500/15 text-orange-500" pulse={stats?.criticalPatients > 0} />
-        <StatCard icon={FlaskConical} label="Pending Labs" value={stats?.pendingLabOrders ?? 0} color="bg-yellow-500/15 text-yellow-500" />
+      {/* KPI stat cards */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: "1rem" }}>
+        <StatCard icon={Users}      label="Total Patients"     value={stats?.totalPatients ?? 0}       iconColor="#3b82f6"  iconBg="#eff6ff"  trend={{ value: "+4.2%", up: true }} />
+        <StatCard icon={Stethoscope} label="Today's OPD"       value={stats?.todayOpdCount ?? 0}        iconColor={C.teal}  iconBg="#f0fdf9"  sub="appointments" trend={{ value: "+11%", up: true }} />
+        <StatCard icon={BedDouble}  label="Active Admissions"  value={stats?.activeAdmissions ?? 0}     iconColor="#7c3aed" iconBg="#f5f3ff"  />
+        <StatCard icon={Zap}        label="Emergency Today"    value={stats?.emergencyCasesToday ?? 0}  iconColor="#ea580c" iconBg="#fff7ed"  trend={{ value: "-2", up: false }} />
+        <StatCard icon={FlaskConical} label="Pending Labs"     value={stats?.pendingLabOrders ?? 0}     iconColor="#ca8a04" iconBg="#fefce8"  />
       </div>
 
-      {/* Revenue + Bed Occupancy row */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card border border-card-border rounded-xl p-4 col-span-1">
-          <div className="flex items-center gap-2 mb-1">
-            <DollarSign className="w-4 h-4 text-emerald-500" />
-            <span className="text-sm font-medium text-foreground">Revenue Today</span>
+      {/* Revenue + Bed occupancy row */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }} className="db-row">
+        {/* Revenue today */}
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+            <div style={{ width: 32, height: 32, borderRadius: "0.5rem", background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <DollarSign size={16} color="#059669" />
+            </div>
+            <span style={{ fontSize: "0.82rem", fontWeight: 600, color: C.body }}>Revenue Today</span>
           </div>
-          <div className="text-2xl font-bold text-foreground">{formatCurrency(stats?.todayRevenue ?? 0)}</div>
-          <div className="text-xs text-muted-foreground mt-1">
-            Month to date: <span className="text-foreground font-medium">{formatCurrency(stats?.monthRevenue ?? 0)}</span>
+          <div style={{ fontSize: "1.65rem", fontWeight: 900, color: C.navy }}>{formatCurrency(stats?.todayRevenue ?? 0)}</div>
+          <div style={{ fontSize: "0.75rem", color: C.muted, marginTop: "0.3rem" }}>
+            MTD: <span style={{ color: C.navy, fontWeight: 700 }}>{formatCurrency(stats?.monthRevenue ?? 0)}</span>
+          </div>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", marginTop: "0.625rem", fontSize: "0.72rem", color: "#059669", fontWeight: 700 }}>
+            <TrendingUp size={12} /> +18% vs last month
           </div>
         </div>
-        <div className="bg-card border border-card-border rounded-xl p-4 col-span-1">
-          <div className="flex items-center gap-2 mb-1">
-            <Bed className="w-4 h-4 text-blue-500" />
-            <span className="text-sm font-medium text-foreground">Bed Occupancy</span>
+
+        {/* Bed occupancy */}
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
+            <div style={{ width: 32, height: 32, borderRadius: "0.5rem", background: "#eff6ff", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Bed size={16} color="#3b82f6" />
+            </div>
+            <span style={{ fontSize: "0.82rem", fontWeight: 600, color: C.body }}>Bed Occupancy</span>
           </div>
-          <div className="text-2xl font-bold text-foreground">{occupancyRate}%</div>
-          <div className="w-full bg-muted rounded-full h-2 mt-2">
-            <div className="h-2 rounded-full bg-primary transition-all" style={{ width: `${occupancyRate}%` }} />
+          <div style={{ fontSize: "1.65rem", fontWeight: 900, color: C.navy }}>{occupancyRate}%</div>
+          <div style={{ width: "100%", background: "#e2e8f0", borderRadius: 99, height: 6, marginTop: "0.75rem" }}>
+            <div style={{ width: `${occupancyRate}%`, height: 6, borderRadius: 99, background: C.teal, transition: "width 0.8s ease" }} />
           </div>
-          <div className="text-xs text-muted-foreground mt-1">{occupiedBeds}/{totalBeds} beds occupied</div>
+          <div style={{ fontSize: "0.72rem", color: C.muted, marginTop: "0.375rem" }}>{occupiedBeds}/{totalBeds} beds occupied</div>
         </div>
-        <div className="bg-card border border-card-border rounded-xl p-4 col-span-1">
-          <div className="flex items-center gap-2 mb-3">
-            <Activity className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Bed Distribution</span>
+
+        {/* Bed distribution donut */}
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.75rem" }}>
+            <div style={{ width: 32, height: 32, borderRadius: "0.5rem", background: "#f0fdf9", display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={16} color={C.teal} />
+            </div>
+            <span style={{ fontSize: "0.82rem", fontWeight: 600, color: C.body }}>Bed Distribution</span>
           </div>
           {bedPieData.length > 0 ? (
-            <div className="flex items-center gap-4">
-              <PieChart width={80} height={80}>
-                <Pie data={bedPieData} cx={35} cy={35} innerRadius={22} outerRadius={38} dataKey="value" strokeWidth={0}>
-                  {bedPieData.map((entry: any, i: number) => (
-                    <Cell key={i} fill={entry.color} />
-                  ))}
+            <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+              <PieChart width={72} height={72}>
+                <Pie data={bedPieData} cx={32} cy={32} innerRadius={20} outerRadius={34} dataKey="value" strokeWidth={0}>
+                  {bedPieData.map((entry: any, i: number) => <Cell key={i} fill={entry.color} />)}
                 </Pie>
               </PieChart>
-              <div className="space-y-1 flex-1">
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem", flex: 1 }}>
                 {bedPieData.map((entry: any) => (
-                  <div key={entry.name} className="flex items-center gap-2 text-xs">
-                    <div className="w-2 h-2 rounded-full shrink-0" style={{ background: entry.color }} />
-                    <span className="text-muted-foreground flex-1">{entry.name}</span>
-                    <span className="font-medium text-foreground">{entry.value}</span>
+                  <div key={entry.name} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.75rem" }}>
+                    <div style={{ width: 8, height: 8, borderRadius: "50%", background: entry.color, flexShrink: 0 }} />
+                    <span style={{ color: C.body, flex: 1 }}>{entry.name}</span>
+                    <span style={{ fontWeight: 700, color: C.navy }}>{entry.value}</span>
                   </div>
                 ))}
               </div>
             </div>
-          ) : <div className="text-muted-foreground text-xs">No data</div>}
+          ) : <div style={{ fontSize: "0.8rem", color: C.muted }}>No data</div>}
         </div>
       </div>
 
-      {/* Revenue Chart + Activity Feed */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        {/* Revenue Chart */}
-        <div className="bg-card border border-card-border rounded-xl p-4 col-span-2">
-          <div className="flex items-center justify-between mb-4">
+      {/* Revenue chart + Activity feed */}
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "1rem" }} className="db-chart-row">
+        {/* Revenue area chart */}
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
             <div>
-              <div className="text-sm font-medium text-foreground">Revenue — Last 30 Days</div>
-              <div className="text-xs text-muted-foreground">PKR (thousands)</div>
+              <div style={{ fontSize: "0.875rem", fontWeight: 700, color: C.navy }}>Revenue — Last 30 Days</div>
+              <div style={{ fontSize: "0.72rem", color: C.muted }}>PKR (thousands)</div>
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.3rem", fontSize: "0.75rem", fontWeight: 700, color: "#059669", background: "#ecfdf5", padding: "0.25rem 0.625rem", borderRadius: "99px" }}>
+              <TrendingUp size={12} /> +18% MTD
             </div>
           </div>
           {chartData.length > 0 ? (
@@ -209,46 +246,42 @@ export default function Dashboard() {
               <AreaChart data={chartData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(196 100% 47%)" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(196 100% 47%)" stopOpacity={0} />
+                    <stop offset="5%"  stopColor="#0d9488" stopOpacity={0.15} />
+                    <stop offset="95%" stopColor="#0d9488" stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickLine={false} axisLine={false} tickFormatter={(v) => v?.slice(5)} />
-                <YAxis tick={{ fontSize: 10, fill: "hsl(var(--muted-foreground))" }} tickLine={false} axisLine={false} />
-                <Tooltip
-                  contentStyle={{ background: "hsl(var(--popover))", border: "1px solid hsl(var(--border))", borderRadius: "8px", fontSize: 12 }}
-                  labelStyle={{ color: "hsl(var(--foreground))", fontWeight: 600 }}
-                  formatter={(v: any) => [`${v}k PKR`, "Revenue"]}
-                />
-                <Area type="monotone" dataKey="revenue" stroke="hsl(196 100% 47%)" fill="url(#revGrad)" strokeWidth={2} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                <XAxis dataKey="date" tick={{ fontSize: 10, fill: C.muted }} tickLine={false} axisLine={false} tickFormatter={(v) => v?.slice(5)} />
+                <YAxis tick={{ fontSize: 10, fill: C.muted }} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={CHART_TOOLTIP_STYLE} labelStyle={{ color: C.navy, fontWeight: 600 }} formatter={(v: any) => [`${v}k PKR`, "Revenue"]} />
+                <Area type="monotone" dataKey="revenue" stroke="#0d9488" fill="url(#revGrad)" strokeWidth={2.5} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
           ) : (
-            <div className="h-40 flex items-center justify-center text-muted-foreground text-sm">No revenue data yet</div>
+            <div style={{ height: 180, display: "flex", alignItems: "center", justifyContent: "center", color: C.muted, fontSize: "0.85rem" }}>No revenue data yet</div>
           )}
         </div>
 
-        {/* Activity Feed */}
-        <div className="bg-card border border-card-border rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Clock className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Live Activity</span>
-            <span className="ml-auto w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+        {/* Live activity feed */}
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+            <Clock size={15} color={C.teal} />
+            <span style={{ fontSize: "0.875rem", fontWeight: 700, color: C.navy }}>Live Activity</span>
+            <span style={{ marginLeft: "auto", width: 8, height: 8, background: "#22c55e", borderRadius: "50%", animation: "pulse 1.5s infinite", display: "inline-block" }} />
           </div>
-          <div className="space-y-3 overflow-y-auto max-h-52 scrollbar-thin">
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", overflowY: "auto", maxHeight: "220px" }}>
             {activities.length === 0 ? (
-              <div className="text-muted-foreground text-xs text-center py-4">No recent activity</div>
+              <div style={{ fontSize: "0.8rem", color: C.muted, textAlign: "center", padding: "1rem 0" }}>No recent activity</div>
             ) : (
               activities.map((a: any) => (
-                <div key={a.id} className="flex items-start gap-2">
-                  <div className={cn(
-                    "w-1.5 h-1.5 rounded-full mt-1.5 shrink-0",
-                    a.severity === "critical" ? "bg-red-500" : a.severity === "warning" ? "bg-amber-500" : "bg-emerald-500"
-                  )} />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-xs text-foreground leading-snug">{a.description}</p>
-                    <p className="text-[10px] text-muted-foreground mt-0.5">{a.patientName} · {formatDateTime(a.timestamp)}</p>
+                <div key={a.id} style={{ display: "flex", alignItems: "flex-start", gap: "0.625rem" }}>
+                  <div style={{
+                    width: 8, height: 8, borderRadius: "50%", flexShrink: 0, marginTop: 5,
+                    background: a.severity === "critical" ? "#dc2626" : a.severity === "warning" ? "#f59e0b" : "#22c55e",
+                  }} />
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: "0.78rem", color: C.navy, lineHeight: 1.4, margin: 0 }}>{a.description}</p>
+                    <p style={{ fontSize: "0.68rem", color: C.muted, margin: "0.15rem 0 0" }}>{a.patientName} · {formatDateTime(a.timestamp)}</p>
                   </div>
                 </div>
               ))
@@ -257,29 +290,29 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Ward Bed Summary */}
+      {/* Ward bed grid */}
       {bedSummary.length > 0 && (
-        <div className="bg-card border border-card-border rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-4">
-            <Bed className="w-4 h-4 text-primary" />
-            <span className="text-sm font-medium text-foreground">Ward-wise Bed Status</span>
+        <div style={{ background: C.white, border: `1px solid ${C.border}`, borderRadius: "0.875rem", padding: "1.25rem", boxShadow: "0 1px 4px rgba(15,32,39,0.05)" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+            <Bed size={15} color={C.teal} />
+            <span style={{ fontSize: "0.875rem", fontWeight: 700, color: C.navy }}>Ward-wise Bed Status</span>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "0.75rem" }}>
             {bedSummary.map((ward: any) => {
-              const occPct = ward.total > 0 ? (ward.occupied / ward.total) * 100 : 0;
+              const pct = ward.total > 0 ? (ward.occupied / ward.total) * 100 : 0;
               return (
-                <div key={ward.ward} className="bg-muted/50 rounded-lg p-3 border border-border">
-                  <div className="text-xs font-semibold text-foreground mb-2 leading-tight">{ward.ward}</div>
-                  <div className="flex gap-1 mb-2">
+                <div key={ward.ward} style={{ background: "#f8fafc", borderRadius: "0.75rem", padding: "0.875rem", border: `1px solid ${C.border}` }}>
+                  <div style={{ fontSize: "0.78rem", fontWeight: 700, color: C.navy, marginBottom: "0.625rem" }}>{ward.ward}</div>
+                  <div style={{ display: "flex", gap: 3, marginBottom: "0.5rem" }}>
                     {Array.from({ length: ward.total }).map((_, i) => (
-                      <div key={i} className={cn(
-                        "h-2 flex-1 rounded-sm",
-                        i < ward.occupied ? "bg-blue-500" : i < ward.occupied + ward.reserved ? "bg-amber-400" : "bg-muted"
-                      )} />
+                      <div key={i} style={{
+                        height: 8, flex: 1, borderRadius: 4,
+                        background: i < ward.occupied ? C.teal : i < ward.occupied + ward.reserved ? "#f59e0b" : "#e2e8f0",
+                      }} />
                     ))}
                   </div>
-                  <div className="text-[10px] text-muted-foreground">
-                    {ward.occupied}/{ward.total} · {Math.round(occPct)}%
+                  <div style={{ fontSize: "0.7rem", color: C.muted }}>
+                    {ward.occupied}/{ward.total} · <span style={{ color: C.teal, fontWeight: 700 }}>{Math.round(pct)}%</span>
                   </div>
                 </div>
               );
@@ -287,6 +320,18 @@ export default function Dashboard() {
           </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes spin  { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: .4; } }
+        @media (max-width: 900px) {
+          .db-row       { grid-template-columns: 1fr 1fr !important; }
+          .db-chart-row { grid-template-columns: 1fr !important; }
+        }
+        @media (max-width: 600px) {
+          .db-row { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }
