@@ -2,26 +2,43 @@ import { useRef, useEffect, useState } from "react";
 import { useLocation } from "wouter";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
-  Activity, ArrowRight, Bed, BriefcaseMedical, Check, ChevronRight,
-  FlaskConical, LayoutDashboard, Menu, Pill, Receipt, Shield, Stethoscope,
-  Users, Zap, X, Star, Globe, TrendingUp, Clock, Heart, Lock,
-  BarChart3, Cpu, Layers, Play, CheckCircle
+  Activity, ArrowRight, Bed, BriefcaseMedical, Check, CheckCircle,
+  ChevronRight, FlaskConical, BarChart3, Layers, Menu, Pill,
+  Receipt, Shield, Star, Stethoscope, Users, Zap, X, Clock,
+  TrendingUp, Globe, Cpu, Play, Heart
 } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-function useCountUp(target: number, duration = 2000, start = false) {
+/* ── palette (light, health-tech) ─────────────────────────────── */
+const C = {
+  mint: "#e8faf6",           // page background
+  mintMid: "#d1f5ed",        // hero section accent
+  teal: "#0d9488",           // primary action
+  tealLight: "#ccfbf1",      // teal tint backgrounds
+  tealDark: "#0f766e",       // hover state
+  navy: "#0f2027",           // headings
+  navyMid: "#1e3a5f",        // sub-headings
+  body: "#4b5563",           // body text
+  muted: "#9ca3af",          // muted text
+  white: "#ffffff",
+  border: "#e2e8f0",
+  card: "#ffffff",
+  sectionAlt: "#f8fafc",
+  sectionMint: "#f0fdf9",
+};
+
+/* ── count-up hook ─────────────────────────────────────────────── */
+function useCountUp(target: number, duration = 1800, start = false) {
   const [count, setCount] = useState(0);
   useEffect(() => {
     if (!start) return;
     let startTime: number;
-    const step = (timestamp: number) => {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1);
-      const ease = 1 - Math.pow(1 - progress, 3);
-      setCount(Math.floor(ease * target));
-      if (progress < 1) requestAnimationFrame(step);
+    const step = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const p = Math.min((ts - startTime) / duration, 1);
+      setCount(Math.floor((1 - Math.pow(1 - p, 3)) * target));
+      if (p < 1) requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
   }, [start, target, duration]);
@@ -33,37 +50,38 @@ function CountStat({ value, suffix, label }: { value: number; suffix: string; la
   const inView = useInView(ref, { once: true, margin: "-50px" });
   const count = useCountUp(value, 1800, inView);
   return (
-    <div ref={ref} className="text-center">
-      <div className="text-4xl md:text-5xl font-black text-white tabular-nums">
-        {count.toLocaleString()}<span className="text-primary">{suffix}</span>
+    <div ref={ref} className="text-center py-6">
+      <div style={{ color: C.teal, fontWeight: 900, fontSize: "2.5rem", lineHeight: 1, fontFamily: "inherit" }}>
+        {count.toLocaleString()}{suffix}
       </div>
-      <div className="text-sm text-white/50 mt-1 font-medium">{label}</div>
+      <div style={{ color: C.body, fontSize: "0.875rem", marginTop: "0.35rem", fontWeight: 500 }}>{label}</div>
     </div>
   );
 }
 
+/* ── module list ───────────────────────────────────────────────── */
 const MODULES = [
-  { icon: Users, label: "Patient Registry", desc: "Complete EMR with MR#, history, allergies & chronic conditions", color: "from-blue-500/20 to-blue-500/5", accent: "text-blue-400", border: "border-blue-500/20" },
-  { icon: Stethoscope, label: "OPD Queue", desc: "Real-time Kanban queue with token numbers & status tracking", color: "from-cyan-500/20 to-cyan-500/5", accent: "text-cyan-400", border: "border-cyan-500/20" },
-  { icon: Bed, label: "IPD / Bed Management", desc: "Visual bed grid across 5 wards with instant occupancy stats", color: "from-purple-500/20 to-purple-500/5", accent: "text-purple-400", border: "border-purple-500/20" },
-  { icon: Zap, label: "Emergency Triage", desc: "Manchester 5-level triage with vitals, colour-coded priority", color: "from-red-500/20 to-red-500/5", accent: "text-red-400", border: "border-red-500/20" },
-  { icon: Pill, label: "Pharmacy", desc: "Medication inventory, stock alerts & prescription management", color: "from-emerald-500/20 to-emerald-500/5", accent: "text-emerald-400", border: "border-emerald-500/20" },
-  { icon: FlaskConical, label: "Laboratory", desc: "Lab orders with STAT/Urgent priority & critical result flags", color: "from-yellow-500/20 to-yellow-500/5", accent: "text-yellow-400", border: "border-yellow-500/20" },
-  { icon: Receipt, label: "Billing & Payments", desc: "Itemised invoicing, discount, tax & one-click payment marking", color: "from-orange-500/20 to-orange-500/5", accent: "text-orange-400", border: "border-orange-500/20" },
-  { icon: BarChart3, label: "Analytics Dashboard", desc: "30-day revenue trends, ward occupancy & department KPIs", color: "from-pink-500/20 to-pink-500/5", accent: "text-pink-400", border: "border-pink-500/20" },
+  { icon: Users, label: "Patient Registry", desc: "Complete EMR with MR#, history, allergies & chronic conditions", color: "#3b82f6", bg: "#eff6ff" },
+  { icon: Stethoscope, label: "OPD Queue", desc: "Real-time Kanban queue with token numbers & status tracking", color: "#0d9488", bg: "#f0fdf9" },
+  { icon: Bed, label: "IPD / Bed Mgmt", desc: "Visual bed grid across 5 wards with occupancy stats", color: "#7c3aed", bg: "#f5f3ff" },
+  { icon: Zap, label: "Emergency Triage", desc: "Manchester 5-level triage with vitals & colour-coded priority", color: "#dc2626", bg: "#fef2f2" },
+  { icon: Pill, label: "Pharmacy", desc: "Medication inventory, stock alerts & prescription management", color: "#059669", bg: "#ecfdf5" },
+  { icon: FlaskConical, label: "Laboratory", desc: "Lab orders with STAT/Urgent priority & critical result flags", color: "#d97706", bg: "#fffbeb" },
+  { icon: Receipt, label: "Billing", desc: "Itemised invoicing, discount, tax & one-click payment marking", color: "#ea580c", bg: "#fff7ed" },
+  { icon: BarChart3, label: "Analytics", desc: "30-day revenue trends, ward occupancy & department KPIs", color: "#db2777", bg: "#fdf2f8" },
 ];
 
 const FEATURES = [
-  { icon: Clock, title: "Real-Time Operations", desc: "Live auto-refreshing queues, emergency boards, and dashboards so your staff always sees the current state — no page reloads.", color: "text-cyan-400 bg-cyan-400/10" },
-  { icon: Shield, title: "Role-Based Access", desc: "Admin, Doctor, Nurse, and Pharmacist roles with dedicated workflows. Each user sees exactly what they need.", color: "text-purple-400 bg-purple-400/10" },
-  { icon: Cpu, title: "Integrated Modules", desc: "One unified platform — from admission to discharge to billing. No fragmented tools, no data silos.", color: "text-emerald-400 bg-emerald-400/10" },
-  { icon: TrendingUp, title: "Financial Clarity", desc: "Revenue charts, invoice tracking, and pending/overdue management give finance teams instant visibility.", color: "text-orange-400 bg-orange-400/10" },
+  { icon: Clock, title: "Real-Time Operations", desc: "Live auto-refreshing queues, emergency boards, and dashboards — no page reloads, always current.", color: "#0d9488", bg: "#f0fdf9" },
+  { icon: Shield, title: "Role-Based Access", desc: "Admin, Doctor, Nurse, and Pharmacist roles. Each user sees exactly the workflows they need.", color: "#7c3aed", bg: "#f5f3ff" },
+  { icon: Cpu, title: "Fully Integrated", desc: "One unified platform from admission to discharge to billing — no fragmented tools, no data silos.", color: "#3b82f6", bg: "#eff6ff" },
+  { icon: TrendingUp, title: "Financial Clarity", desc: "Revenue charts, invoice tracking, and pending/overdue management give finance teams instant visibility.", color: "#ea580c", bg: "#fff7ed" },
 ];
 
 const STEPS = [
-  { n: "01", title: "Register Patients", desc: "Create a patient record with MR number, demographics, allergies, and emergency contacts in seconds." },
-  { n: "02", title: "Manage Care Journey", desc: "From OPD appointment → IPD admission → lab orders → prescriptions → emergency — all in one place." },
-  { n: "03", title: "Collect & Analyse", desc: "Generate itemised invoices, mark payments, and review 30-day revenue & occupancy trends on the analytics dashboard." },
+  { n: "01", title: "Register Patients", desc: "Create a patient record with MR number, demographics, allergies, and emergency contacts in under 60 seconds." },
+  { n: "02", title: "Manage the Care Journey", desc: "OPD appointment → IPD admission → lab orders → pharmacy → emergency — all linked to one patient record." },
+  { n: "03", title: "Bill & Analyse", desc: "Generate itemised invoices, mark payments, and review revenue & occupancy trends on the analytics dashboard." },
 ];
 
 const TESTIMONIALS = [
@@ -72,11 +90,11 @@ const TESTIMONIALS = [
   { quote: "Our billing team processes 3× more invoices per day. The workflow is clean and the analytics save us hours every week.", name: "Sana Mirza", role: "CFO, South City Hospital" },
 ];
 
+/* ─────────────────────────────────────────────────────────────── */
 export default function Home() {
   const [, setLocation] = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [activeTestimonial, setActiveTestimonial] = useState(0);
-  const heroRef = useRef(null);
 
   useEffect(() => {
     const id = setInterval(() => setActiveTestimonial((a) => (a + 1) % TESTIMONIALS.length), 5000);
@@ -85,55 +103,77 @@ export default function Home() {
 
   const goLogin = () => setLocation("/login");
 
+  /* shared button styles */
+  const btnPrimary: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", gap: "0.5rem",
+    background: C.teal, color: "#fff", fontWeight: 700, fontSize: "0.9rem",
+    padding: "0.8rem 1.75rem", borderRadius: "0.625rem", border: "none",
+    cursor: "pointer", transition: "background 0.18s, transform 0.15s",
+    boxShadow: "0 4px 14px rgba(13,148,136,0.3)",
+  };
+  const btnOutline: React.CSSProperties = {
+    display: "inline-flex", alignItems: "center", gap: "0.5rem",
+    background: "transparent", color: C.navy, fontWeight: 600, fontSize: "0.9rem",
+    padding: "0.8rem 1.75rem", borderRadius: "0.625rem",
+    border: `1.5px solid ${C.border}`, cursor: "pointer", transition: "border-color 0.18s, transform 0.15s",
+  };
+
   return (
-    <div className="min-h-screen bg-background text-foreground overflow-x-hidden">
+    <div style={{ fontFamily: "'Inter', system-ui, sans-serif", background: C.white, color: C.navy, overflowX: "hidden" }}>
 
       {/* ─── NAVBAR ─── */}
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-white/5 bg-background/80 backdrop-blur-xl">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+      <nav style={{
+        position: "fixed", top: 0, left: 0, right: 0, zIndex: 100,
+        background: "rgba(255,255,255,0.92)", backdropFilter: "blur(12px)",
+        borderBottom: `1px solid ${C.border}`,
+      }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center shrink-0">
-              <Activity className="w-4 h-4 text-black font-bold" />
+          <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+            <div style={{ width: 34, height: 34, borderRadius: 10, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Activity size={18} color="#fff" />
             </div>
-            <span className="font-bold text-lg text-foreground">MediCore <span className="text-primary">HIMS</span></span>
+            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 
-          {/* Desktop nav */}
-          <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
-            <a href="#modules" className="hover:text-foreground transition-colors">Modules</a>
-            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
-            <a href="#how" className="hover:text-foreground transition-colors">How It Works</a>
-            <a href="#testimonials" className="hover:text-foreground transition-colors">Testimonials</a>
+          {/* Desktop links */}
+          <div style={{ display: "flex", gap: "2rem", alignItems: "center" }} className="hide-mobile">
+            {["Modules", "Features", "How It Works", "Testimonials"].map((l) => (
+              <a key={l} href={`#${l.toLowerCase().replace(/ /g, "")}`}
+                style={{ color: C.body, fontSize: "0.875rem", fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
+                onMouseEnter={e => (e.currentTarget.style.color = C.teal)}
+                onMouseLeave={e => (e.currentTarget.style.color = C.body)}>
+                {l}
+              </a>
+            ))}
           </div>
 
-          {/* CTA */}
-          <div className="hidden md:flex items-center gap-3">
-            <button onClick={goLogin} className="text-sm text-muted-foreground hover:text-foreground transition-colors px-3 py-2">
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
+            <button onClick={goLogin}
+              style={{ background: "none", border: "none", cursor: "pointer", color: C.body, fontSize: "0.875rem", fontWeight: 600, padding: "0.5rem 0.75rem" }}
+              className="hide-mobile">
               Sign In
             </button>
-            <button onClick={goLogin}
-              className="text-sm font-semibold px-4 py-2 rounded-lg bg-primary text-black hover:bg-primary/90 transition-colors flex items-center gap-1.5">
-              Get Demo <ArrowRight className="w-3.5 h-3.5" />
+            <button onClick={goLogin} style={{ ...btnPrimary, padding: "0.55rem 1.25rem", fontSize: "0.85rem", boxShadow: "0 2px 8px rgba(13,148,136,0.25)" }}>
+              Get Demo <ArrowRight size={14} />
+            </button>
+            <button className="show-mobile" onClick={() => setMobileOpen((o) => !o)}
+              style={{ background: "none", border: "none", cursor: "pointer", color: C.navy, padding: "0.4rem" }}>
+              {mobileOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
-
-          {/* Mobile menu toggle */}
-          <button className="md:hidden text-muted-foreground hover:text-foreground" onClick={() => setMobileOpen((o) => !o)}>
-            {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-          </button>
         </div>
 
         {/* Mobile menu */}
         <AnimatePresence>
           {mobileOpen && (
             <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
-              className="md:hidden border-t border-white/5 bg-background/95 px-4 py-4 flex flex-col gap-3">
+              style={{ borderTop: `1px solid ${C.border}`, background: "#fff", padding: "1rem 1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               {["Modules", "Features", "How It Works", "Testimonials"].map((l) => (
                 <a key={l} href={`#${l.toLowerCase().replace(/ /g, "")}`} onClick={() => setMobileOpen(false)}
-                  className="text-sm text-muted-foreground hover:text-foreground py-2">{l}</a>
+                  style={{ color: C.body, fontSize: "0.9rem", textDecoration: "none", padding: "0.5rem 0" }}>{l}</a>
               ))}
-              <button onClick={goLogin} className="mt-2 w-full py-2.5 rounded-lg bg-primary text-black font-semibold text-sm">
+              <button onClick={goLogin} style={{ ...btnPrimary, marginTop: "0.5rem", justifyContent: "center" }}>
                 Sign In / Get Demo
               </button>
             </motion.div>
@@ -141,205 +181,252 @@ export default function Home() {
         </AnimatePresence>
       </nav>
 
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+        .hide-mobile { display: flex !important; }
+        .show-mobile { display: none !important; }
+        @media (max-width: 768px) {
+          .hide-mobile { display: none !important; }
+          .show-mobile { display: flex !important; }
+          .hero-grid { grid-template-columns: 1fr !important; }
+          .modules-grid { grid-template-columns: 1fr 1fr !important; }
+          .features-grid { grid-template-columns: 1fr !important; }
+          .steps-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+          .footer-row { flex-direction: column !important; gap: 1rem !important; text-align: center !important; }
+          .hero-headline { font-size: 2.4rem !important; }
+        }
+        @media (max-width: 480px) {
+          .modules-grid { grid-template-columns: 1fr !important; }
+          .stats-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        button:hover { opacity: 0.92; transform: translateY(-1px); }
+        button:active { transform: translateY(0); }
+        a { text-decoration: none; }
+      `}</style>
+
       {/* ─── HERO ─── */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center pt-16 overflow-hidden">
-        {/* Grid background */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: "linear-gradient(hsl(196 100% 47%) 1px, transparent 1px), linear-gradient(90deg, hsl(196 100% 47%) 1px, transparent 1px)", backgroundSize: "60px 60px" }} />
+      <section style={{
+        background: `linear-gradient(140deg, ${C.mint} 0%, #e0f5f0 40%, #f0fdf9 100%)`,
+        paddingTop: "96px", paddingBottom: "80px", position: "relative", overflow: "hidden",
+      }}>
+        {/* Soft circle accents */}
+        <div style={{ position: "absolute", top: "-80px", right: "-80px", width: 400, height: 400, borderRadius: "50%", background: "rgba(13,148,136,0.08)", pointerEvents: "none" }} />
+        <div style={{ position: "absolute", bottom: "-60px", left: "-60px", width: 300, height: 300, borderRadius: "50%", background: "rgba(13,148,136,0.06)", pointerEvents: "none" }} />
 
-        {/* Gradient orbs */}
-        <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div className="hero-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
 
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 py-24 lg:py-0 lg:min-h-screen lg:flex lg:items-center">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
-
-            {/* Left — Copy */}
+            {/* Left */}
             <div>
-              {/* Badge */}
-              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
-                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/30 bg-primary/5 text-primary text-xs font-semibold mb-6">
-                <span className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                Built for 2026 · Hospital-Grade
+              <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.45 }}>
+                <span style={{
+                  display: "inline-flex", alignItems: "center", gap: "0.5rem",
+                  background: C.tealLight, color: C.teal, fontSize: "0.75rem", fontWeight: 700,
+                  padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1.5rem", letterSpacing: "0.02em",
+                }}>
+                  <span style={{ width: 6, height: 6, background: C.teal, borderRadius: "50%", animation: "pulse 1.5s infinite" }} />
+                  Built for 2026 · Hospital-Grade
+                </span>
               </motion.div>
 
-              {/* Headline */}
-              <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.1 }}
-                className="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-[1.1] tracking-tight mb-6">
-                The Operating<br />System for{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">Modern Hospitals</span>
+              <motion.h1 className="hero-headline" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.08 }}
+                style={{ fontSize: "3.2rem", fontWeight: 900, color: C.navy, lineHeight: 1.12, marginBottom: "1.25rem", letterSpacing: "-0.02em" }}>
+                The Operating System<br />
+                for <span style={{ color: C.teal }}>Modern Hospitals</span>
               </motion.h1>
 
-              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-lg text-muted-foreground leading-relaxed mb-8 max-w-lg">
-                MediCore HIMS unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, lab, billing, and analytics — in one seamless dark-mode platform your staff will love.
+              <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15 }}
+                style={{ fontSize: "1.1rem", color: C.body, lineHeight: 1.7, marginBottom: "2rem", maxWidth: "480px" }}>
+                MediCore HIMS unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
               </motion.p>
 
-              {/* CTAs */}
-              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.3 }}
-                className="flex flex-wrap gap-3 mb-10">
-                <button onClick={goLogin}
-                  className="flex items-center gap-2 px-6 py-3.5 rounded-xl bg-primary text-black font-bold text-sm hover:bg-primary/90 transition-all hover:scale-105 active:scale-100 shadow-lg shadow-primary/25">
-                  <Play className="w-4 h-4 fill-black" /> Start Demo — Free
+              <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.2 }}
+                style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap", marginBottom: "1.75rem" }}>
+                <button onClick={goLogin} style={btnPrimary}>
+                  <Play size={15} fill="#fff" /> Start Demo — Free
                 </button>
-                <button onClick={goLogin}
-                  className="flex items-center gap-2 px-6 py-3.5 rounded-xl border border-white/10 bg-white/5 text-white font-semibold text-sm hover:bg-white/10 transition-all hover:scale-105 active:scale-100 backdrop-blur-sm">
-                  <Users className="w-4 h-4" /> Request a Tour
+                <button onClick={goLogin} style={btnOutline}>
+                  <Users size={15} /> Request a Tour
                 </button>
               </motion.div>
 
-              {/* Trust signals */}
-              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 0.4 }}
-                className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.3 }}
+                style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem" }}>
                 {["No credit card", "HIPAA-ready", "Multi-role access", "Real-time data"].map((t) => (
-                  <div key={t} className="flex items-center gap-1.5">
-                    <CheckCircle className="w-3.5 h-3.5 text-primary shrink-0" />
-                    {t}
+                  <div key={t} style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.8rem", color: C.body }}>
+                    <CheckCircle size={14} color={C.teal} /> {t}
                   </div>
                 ))}
               </motion.div>
             </div>
 
-            {/* Right — Dashboard preview card */}
-            <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.7, delay: 0.2 }}
-              className="relative">
-              {/* Glow */}
-              <div className="absolute inset-0 bg-primary/10 rounded-3xl blur-3xl scale-95" />
-
+            {/* Right — dashboard mockup */}
+            <motion.div initial={{ opacity: 0, x: 40 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.15 }} style={{ position: "relative" }}>
               {/* Card */}
-              <div className="relative rounded-2xl border border-white/10 bg-card overflow-hidden shadow-2xl shadow-black/50">
-                {/* Fake title bar */}
-                <div className="flex items-center gap-1.5 px-4 py-3 border-b border-white/5 bg-muted/50">
-                  <div className="w-3 h-3 rounded-full bg-red-500/70" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/70" />
-                  <div className="flex-1 mx-3 h-5 rounded bg-muted/50 text-[10px] text-muted-foreground flex items-center px-2 font-mono">
+              <div style={{
+                background: "#fff", borderRadius: "1.25rem",
+                boxShadow: "0 24px 64px rgba(15,32,39,0.12), 0 4px 16px rgba(13,148,136,0.08)",
+                overflow: "hidden", border: `1px solid ${C.border}`,
+              }}>
+                {/* Fake browser bar */}
+                <div style={{ background: "#f8fafc", borderBottom: `1px solid ${C.border}`, padding: "0.75rem 1rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <div style={{ display: "flex", gap: "0.3rem" }}>
+                    {["#fc5c65","#fed330","#26de81"].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
+                  </div>
+                  <div style={{ flex: 1, marginLeft: "0.5rem", background: "#e2e8f0", borderRadius: "0.375rem", padding: "0.25rem 0.75rem", fontSize: "0.7rem", color: C.muted, fontFamily: "monospace" }}>
                     medicore.hospital/dashboard
                   </div>
                 </div>
 
-                {/* Dashboard mini preview */}
-                <div className="p-4 space-y-3">
+                <div style={{ padding: "1rem" }}>
                   {/* Stats row */}
-                  <div className="grid grid-cols-4 gap-2">
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0.625rem", marginBottom: "0.875rem" }}>
                     {[
-                      { label: "Patients", value: "8,412", color: "text-blue-400" },
-                      { label: "OPD Today", value: "247", color: "text-cyan-400" },
-                      { label: "Beds", value: "87%", color: "text-purple-400" },
-                      { label: "Emergency", value: "7", color: "text-red-400" },
+                      { label: "Patients", value: "8,412", color: "#3b82f6", bg: "#eff6ff" },
+                      { label: "OPD Today", value: "247", color: C.teal, bg: C.tealLight },
+                      { label: "Beds", value: "87%", color: "#7c3aed", bg: "#f5f3ff" },
+                      { label: "Emergency", value: "7", color: "#dc2626", bg: "#fef2f2" },
                     ].map((s) => (
-                      <div key={s.label} className="bg-muted/50 rounded-xl p-2.5 border border-white/5">
-                        <div className={cn("text-sm font-bold", s.color)}>{s.value}</div>
-                        <div className="text-[10px] text-muted-foreground">{s.label}</div>
+                      <div key={s.label} style={{ background: s.bg, borderRadius: "0.625rem", padding: "0.625rem", border: `1px solid ${C.border}` }}>
+                        <div style={{ fontWeight: 800, fontSize: "0.95rem", color: s.color }}>{s.value}</div>
+                        <div style={{ fontSize: "0.65rem", color: C.muted, marginTop: 2 }}>{s.label}</div>
                       </div>
                     ))}
                   </div>
 
-                  {/* Revenue chart placeholder */}
-                  <div className="bg-muted/30 rounded-xl border border-white/5 p-3">
-                    <div className="text-[10px] text-muted-foreground mb-2">Revenue — Last 30 Days</div>
-                    <div className="flex items-end gap-1 h-14">
-                      {[30, 55, 40, 70, 60, 85, 45, 90, 75, 80, 95, 70, 88, 65, 78, 92, 50, 73, 84, 68, 95, 77, 82, 90, 72, 86, 78, 92, 88, 96].map((h, i) => (
-                        <div key={i} className="flex-1 rounded-sm"
-                          style={{ height: `${h}%`, background: i > 22 ? "hsl(196 100% 47%)" : "hsl(196 100% 47% / 0.3)" }} />
+                  {/* Mini chart */}
+                  <div style={{ background: "#f8fafc", borderRadius: "0.75rem", border: `1px solid ${C.border}`, padding: "0.75rem", marginBottom: "0.875rem" }}>
+                    <div style={{ fontSize: "0.65rem", color: C.muted, marginBottom: "0.5rem", fontWeight: 600 }}>Revenue — Last 30 Days</div>
+                    <div style={{ display: "flex", alignItems: "flex-end", gap: 2, height: 52 }}>
+                      {[30,55,40,70,60,85,45,90,75,80,95,70,88,65,78,92,50,73,84,68,95,77,82,90,72,86,78,92,88,96].map((h, i) => (
+                        <div key={i} style={{ flex: 1, borderRadius: 3, height: `${h}%`, background: i > 22 ? C.teal : `${C.teal}40` }} />
                       ))}
                     </div>
                   </div>
 
-                  {/* Activity feed */}
-                  <div className="space-y-2">
+                  {/* Activity */}
+                  <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", marginBottom: "0.875rem" }}>
                     {[
-                      { dot: "bg-red-500", text: "Emergency: Chest pain — Immediate triage", time: "2m ago" },
-                      { dot: "bg-emerald-500", text: "Lab result ready: HbA1c — Ahmad Hassan", time: "8m ago" },
-                      { dot: "bg-blue-500", text: "Bed B-04 discharged — ICU", time: "15m ago" },
+                      { dot: "#dc2626", text: "Emergency: Chest pain — Immediate triage", time: "2m ago", pulse: true },
+                      { dot: "#059669", text: "Lab result ready: HbA1c — Ahmad Hassan", time: "8m ago", pulse: false },
+                      { dot: "#3b82f6", text: "Bed B-04 discharged — ICU ward", time: "15m ago", pulse: false },
                     ].map((a, i) => (
-                      <div key={i} className="flex items-start gap-2">
-                        <div className={cn("w-1.5 h-1.5 rounded-full mt-1.5 shrink-0", a.dot, a.dot === "bg-red-500" ? "animate-pulse" : "")} />
-                        <p className="text-[10px] text-muted-foreground flex-1">{a.text}</p>
-                        <span className="text-[9px] text-muted-foreground/50 whitespace-nowrap">{a.time}</span>
+                      <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem" }}>
+                        <div style={{ width: 7, height: 7, borderRadius: "50%", background: a.dot, marginTop: 4, flexShrink: 0 }} />
+                        <span style={{ fontSize: "0.68rem", color: C.body, flex: 1 }}>{a.text}</span>
+                        <span style={{ fontSize: "0.6rem", color: C.muted, whiteSpace: "nowrap" }}>{a.time}</span>
                       </div>
                     ))}
                   </div>
-                </div>
 
-                {/* Triage strip */}
-                <div className="flex border-t border-white/5">
-                  {[
-                    { label: "Immediate", count: 1, color: "bg-red-600" },
-                    { label: "Very Urgent", count: 2, color: "bg-orange-500" },
-                    { label: "Urgent", count: 3, color: "bg-yellow-400" },
-                    { label: "Semi", count: 0, color: "bg-green-500" },
-                    { label: "Non-Urgent", count: 1, color: "bg-blue-500" },
-                  ].map((t) => (
-                    <div key={t.label} className={cn("flex-1 py-2 text-center border-r border-white/5 last:border-0", t.color + "/10")}>
-                      <div className={cn("text-sm font-bold", t.color === "bg-yellow-400" ? "text-yellow-400" : t.color.replace("bg-", "text-"))}>{t.count}</div>
-                      <div className="text-[8px] text-muted-foreground leading-tight">{t.label}</div>
-                    </div>
-                  ))}
+                  {/* Triage strip */}
+                  <div style={{ display: "grid", gridTemplateColumns: "repeat(5, 1fr)", borderRadius: "0.5rem", overflow: "hidden", border: `1px solid ${C.border}` }}>
+                    {[
+                      { label: "Immediate", count: 1, color: "#dc2626", bg: "#fef2f2" },
+                      { label: "Very Urgent", count: 2, color: "#ea580c", bg: "#fff7ed" },
+                      { label: "Urgent", count: 3, color: "#ca8a04", bg: "#fefce8" },
+                      { label: "Semi", count: 0, color: "#16a34a", bg: "#f0fdf4" },
+                      { label: "Non-Urgent", count: 1, color: "#2563eb", bg: "#eff6ff" },
+                    ].map((t, i) => (
+                      <div key={t.label} style={{ background: t.bg, padding: "0.4rem 0.25rem", textAlign: "center", borderRight: i < 4 ? `1px solid ${C.border}` : "none" }}>
+                        <div style={{ fontWeight: 800, fontSize: "0.9rem", color: t.color }}>{t.count}</div>
+                        <div style={{ fontSize: "0.55rem", color: C.muted, lineHeight: 1.2 }}>{t.label}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
 
               {/* Floating badges */}
               <motion.div animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 3, ease: "easeInOut" }}
-                className="absolute -top-4 -right-4 bg-emerald-500 text-white text-[10px] font-bold px-3 py-1.5 rounded-full shadow-lg">
+                style={{
+                  position: "absolute", top: -16, right: -16,
+                  background: "#10b981", color: "#fff", fontSize: "0.7rem", fontWeight: 700,
+                  padding: "0.4rem 0.875rem", borderRadius: "99px",
+                  boxShadow: "0 4px 12px rgba(16,185,129,0.35)",
+                }}>
                 Live Data
               </motion.div>
               <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut", delay: 1 }}
-                className="absolute -bottom-4 -left-4 bg-card border border-white/10 text-[10px] text-muted-foreground px-3 py-2 rounded-xl shadow-xl">
-                <span className="text-primary font-bold">↑ 23%</span> revenue this week
+                style={{
+                  position: "absolute", bottom: -16, left: -16,
+                  background: "#fff", border: `1px solid ${C.border}`, fontSize: "0.7rem", color: C.body,
+                  padding: "0.5rem 0.875rem", borderRadius: "0.75rem",
+                  boxShadow: "0 8px 24px rgba(15,32,39,0.10)",
+                }}>
+                <span style={{ color: C.teal, fontWeight: 700 }}>↑ 23%</span> revenue this week
               </motion.div>
             </motion.div>
           </div>
         </div>
       </section>
 
-      {/* ─── STATS BAR ─── */}
-      <section className="border-y border-white/5 bg-muted/20 py-14">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
-            <CountStat value={8412} suffix="+" label="Patient Records" />
-            <CountStat value={32} suffix="" label="Beds Managed" />
-            <CountStat value={170} suffix="+" label="Invoices Processed" />
-            <CountStat value={10} suffix="" label="Integrated Modules" />
+      {/* ─── TRUSTED BY (logos strip) ─── */}
+      <section style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: "1.5rem 0" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem", textAlign: "center" }}>
+          <p style={{ fontSize: "0.75rem", fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: "1.25rem", textTransform: "uppercase" }}>
+            Trusted by hospitals & clinics across Pakistan
+          </p>
+          <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2.5rem", alignItems: "center" }}>
+            {["Shifa Hospital", "Aga Khan Health", "South City Hospital", "Liaquat National", "Indus Hospital"].map((name) => (
+              <span key={name} style={{ fontWeight: 700, fontSize: "0.875rem", color: "#94a3b8", letterSpacing: "0.01em" }}>{name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── STATS ─── */}
+      <section style={{ background: C.sectionMint, borderBottom: `1px solid ${C.border}` }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div className="stats-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0", borderLeft: `1px solid ${C.border}` }}>
+            {[
+              { value: 8412, suffix: "+", label: "Patient Records" },
+              { value: 32, suffix: "", label: "Beds Managed" },
+              { value: 170, suffix: "+", label: "Invoices Processed" },
+              { value: 10, suffix: "", label: "Integrated Modules" },
+            ].map((s, i) => (
+              <div key={s.label} style={{ borderRight: `1px solid ${C.border}`, borderTop: `1px solid ${C.border}`, borderBottom: `1px solid ${C.border}` }}>
+                <CountStat {...s} />
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ─── MODULES ─── */}
-      <section id="modules" className="py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-primary/20 bg-primary/5 text-primary text-xs font-semibold mb-4">
-              <Layers className="w-3 h-3" /> Everything in One Platform
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+      <section id="modules" style={{ background: C.white, padding: "5rem 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: C.tealLight, color: C.teal, fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem", letterSpacing: "0.02em" }}>
+              <Layers size={12} /> Everything in One Platform
+            </span>
+            <h2 style={{ fontSize: "2.25rem", fontWeight: 900, color: C.navy, marginBottom: "0.875rem", letterSpacing: "-0.02em" }}>
               Every module your hospital needs,<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-purple-400">perfectly integrated</span>
+              <span style={{ color: C.teal }}>perfectly integrated</span>
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              From first consultation to final invoice — all 10 modules share a single patient record with zero data duplication.
+            <p style={{ color: C.body, maxWidth: "520px", margin: "0 auto", lineHeight: 1.7 }}>
+              All 10 modules share a single patient record — zero duplication, from first visit to final invoice.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="modules-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
             {MODULES.map((m, i) => (
               <motion.div key={m.label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-40px" }}
-                transition={{ delay: i * 0.07 }}
-                className={cn(
-                  "relative group rounded-2xl border p-5 bg-gradient-to-b hover:scale-[1.02] transition-transform cursor-pointer",
-                  m.border, m.color
-                )}
+                initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-40px" }} transition={{ delay: i * 0.06 }}
                 onClick={goLogin}
+                style={{
+                  background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "1rem",
+                  padding: "1.375rem", cursor: "pointer", transition: "box-shadow 0.2s, border-color 0.2s, transform 0.2s",
+                }}
+                whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(15,32,39,0.10)", borderColor: m.color + "50" } as any}
               >
-                <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center mb-3 bg-black/20", m.accent)}>
-                  <m.icon className="w-5 h-5" />
+                <div style={{ width: 40, height: 40, borderRadius: "0.625rem", background: m.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.875rem" }}>
+                  <m.icon size={20} color={m.color} />
                 </div>
-                <div className="font-bold text-sm text-white mb-1">{m.label}</div>
-                <div className="text-xs text-muted-foreground leading-relaxed">{m.desc}</div>
-                <ChevronRight className={cn("absolute bottom-4 right-4 w-4 h-4 opacity-0 group-hover:opacity-100 transition-opacity", m.accent)} />
+                <div style={{ fontWeight: 700, fontSize: "0.875rem", color: C.navy, marginBottom: "0.375rem" }}>{m.label}</div>
+                <div style={{ fontSize: "0.78rem", color: C.body, lineHeight: 1.6 }}>{m.desc}</div>
               </motion.div>
             ))}
           </div>
@@ -347,40 +434,38 @@ export default function Home() {
       </section>
 
       {/* ─── FEATURES ─── */}
-      <section id="features" className="py-24 bg-muted/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <section id="features" style={{ background: C.sectionAlt, padding: "5rem 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }} className="hero-grid">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-purple-500/20 bg-purple-500/5 text-purple-400 text-xs font-semibold mb-4">
-                <Star className="w-3 h-3" /> Why MediCore
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "#f5f3ff", color: "#7c3aed", fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem" }}>
+                <Star size={12} /> Why MediCore
+              </span>
+              <h2 style={{ fontSize: "2.1rem", fontWeight: 900, color: C.navy, marginBottom: "1rem", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
                 Built for the way hospitals<br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-primary">actually work</span>
+                <span style={{ color: C.teal }}>actually work</span>
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-8">
+              <p style={{ color: C.body, lineHeight: 1.75, marginBottom: "1.75rem" }}>
                 We spoke to nurses, doctors, and administrators at 50+ hospitals before writing a single line of code. The result is software that fits your workflow — not the other way around.
               </p>
               <button onClick={goLogin}
-                className="flex items-center gap-2 text-sm font-semibold text-primary hover:text-primary/80 transition-colors">
-                See the full platform <ArrowRight className="w-4 h-4" />
+                style={{ background: "none", border: "none", cursor: "pointer", color: C.teal, fontWeight: 700, fontSize: "0.9rem", display: "flex", alignItems: "center", gap: "0.4rem", padding: 0 }}>
+                See the full platform <ArrowRight size={16} />
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }} className="features-grid">
               {FEATURES.map((f, i) => (
                 <motion.div key={f.title}
-                  initial={{ opacity: 0, x: 30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.1 }}
-                  className="flex gap-4 p-5 rounded-2xl border border-white/5 bg-card hover:border-white/10 transition-colors">
-                  <div className={cn("w-10 h-10 rounded-xl flex items-center justify-center shrink-0", f.color)}>
-                    <f.icon className="w-5 h-5" />
+                  initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }} transition={{ delay: i * 0.1 }}
+                  style={{ display: "flex", gap: "1rem", background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "1rem", padding: "1.25rem", alignItems: "flex-start" }}>
+                  <div style={{ width: 40, height: 40, borderRadius: "0.625rem", background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                    <f.icon size={18} color={f.color} />
                   </div>
                   <div>
-                    <div className="font-bold text-sm text-white mb-1">{f.title}</div>
-                    <div className="text-xs text-muted-foreground leading-relaxed">{f.desc}</div>
+                    <div style={{ fontWeight: 700, fontSize: "0.875rem", color: C.navy, marginBottom: "0.3rem" }}>{f.title}</div>
+                    <div style={{ fontSize: "0.8rem", color: C.body, lineHeight: 1.6 }}>{f.desc}</div>
                   </div>
                 </motion.div>
               ))}
@@ -390,123 +475,124 @@ export default function Home() {
       </section>
 
       {/* ─── HOW IT WORKS ─── */}
-      <section id="howitworks" className="py-24">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-14">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/20 bg-emerald-500/5 text-emerald-400 text-xs font-semibold mb-4">
-              <Globe className="w-3 h-3" /> How It Works
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+      <section id="howitworks" style={{ background: C.white, padding: "5rem 0" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3.5rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "#ecfdf5", color: "#059669", fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem" }}>
+              <Globe size={12} /> How It Works
+            </span>
+            <h2 style={{ fontSize: "2.1rem", fontWeight: 900, color: C.navy, letterSpacing: "-0.02em" }}>
               From patient in to patient out —<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-primary">every step covered</span>
+              <span style={{ color: C.teal }}>every step covered</span>
             </h2>
           </div>
 
-          <div className="relative">
-            {/* Connector line */}
-            <div className="hidden md:block absolute top-16 left-[calc(16.67%+2rem)] right-[calc(16.67%+2rem)] h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
-
-            <div className="grid md:grid-cols-3 gap-8">
-              {STEPS.map((s, i) => (
-                <motion.div key={s.n}
-                  initial={{ opacity: 0, y: 24 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 }}
-                  className="text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-center mx-auto mb-5">
-                    <span className="text-primary font-black text-sm">{s.n}</span>
-                  </div>
-                  <h3 className="font-bold text-white mb-2">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
-                </motion.div>
-              ))}
-            </div>
+          <div className="steps-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
+            {STEPS.map((s, i) => (
+              <motion.div key={s.n}
+                initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }} transition={{ delay: i * 0.13 }}
+                style={{ textAlign: "center" }}>
+                <div style={{
+                  width: 52, height: 52, borderRadius: "1rem",
+                  background: C.tealLight, border: `2px solid ${C.teal}30`,
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  margin: "0 auto 1.25rem", fontSize: "0.875rem", fontWeight: 900, color: C.teal,
+                }}>
+                  {s.n}
+                </div>
+                <h3 style={{ fontWeight: 800, fontSize: "1rem", color: C.navy, marginBottom: "0.625rem" }}>{s.title}</h3>
+                <p style={{ fontSize: "0.85rem", color: C.body, lineHeight: 1.7 }}>{s.desc}</p>
+              </motion.div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* ─── TESTIMONIALS ─── */}
-      <section id="testimonials" className="py-24 bg-muted/10">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-yellow-500/20 bg-yellow-500/5 text-yellow-400 text-xs font-semibold mb-4">
-              <Star className="w-3 h-3 fill-yellow-400" /> Trusted by Leading Hospitals
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white">
+      <section id="testimonials" style={{ background: C.sectionAlt, padding: "5rem 0" }}>
+        <div style={{ maxWidth: "780px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "2.5rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "#fef9c3", color: "#854d0e", fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem" }}>
+              <Star size={12} fill="#854d0e" /> Trusted by Leading Hospitals
+            </span>
+            <h2 style={{ fontSize: "2.1rem", fontWeight: 900, color: C.navy, letterSpacing: "-0.02em" }}>
               Loved by the teams<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-primary">who matter most</span>
+              <span style={{ color: C.teal }}>who matter most</span>
             </h2>
           </div>
 
-          <div className="relative overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div key={activeTestimonial}
-                initial={{ opacity: 0, y: 16 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -16 }}
-                transition={{ duration: 0.4 }}
-                className="bg-card border border-white/8 rounded-2xl p-8 text-center">
-                <div className="flex justify-center mb-4">
-                  {[...Array(5)].map((_, i) => <Star key={i} className="w-4 h-4 text-yellow-400 fill-yellow-400" />)}
-                </div>
-                <blockquote className="text-lg text-white font-medium leading-relaxed mb-6">
-                  "{TESTIMONIALS[activeTestimonial].quote}"
-                </blockquote>
-                <div>
-                  <div className="font-bold text-sm text-white">{TESTIMONIALS[activeTestimonial].name}</div>
-                  <div className="text-xs text-muted-foreground mt-0.5">{TESTIMONIALS[activeTestimonial].role}</div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+          <AnimatePresence mode="wait">
+            <motion.div key={activeTestimonial}
+              initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
+              transition={{ duration: 0.35 }}
+              style={{
+                background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "1.25rem",
+                padding: "2.5rem", textAlign: "center",
+                boxShadow: "0 8px 32px rgba(15,32,39,0.07)",
+              }}>
+              <div style={{ display: "flex", justifyContent: "center", gap: "0.25rem", marginBottom: "1.25rem" }}>
+                {[...Array(5)].map((_, i) => <Star key={i} size={18} color="#f59e0b" fill="#f59e0b" />)}
+              </div>
+              <blockquote style={{ fontSize: "1.1rem", color: C.navyMid, fontWeight: 500, lineHeight: 1.75, marginBottom: "1.5rem" }}>
+                "{TESTIMONIALS[activeTestimonial].quote}"
+              </blockquote>
+              <div style={{ fontWeight: 700, fontSize: "0.875rem", color: C.navy }}>{TESTIMONIALS[activeTestimonial].name}</div>
+              <div style={{ fontSize: "0.8rem", color: C.muted, marginTop: "0.25rem" }}>{TESTIMONIALS[activeTestimonial].role}</div>
+            </motion.div>
+          </AnimatePresence>
 
-            <div className="flex justify-center gap-2 mt-5">
-              {TESTIMONIALS.map((_, i) => (
-                <button key={i} onClick={() => setActiveTestimonial(i)}
-                  className={cn("w-2 h-2 rounded-full transition-all", i === activeTestimonial ? "bg-primary w-5" : "bg-muted")} />
-              ))}
-            </div>
+          <div style={{ display: "flex", justifyContent: "center", gap: "0.5rem", marginTop: "1.5rem" }}>
+            {TESTIMONIALS.map((_, i) => (
+              <button key={i} onClick={() => setActiveTestimonial(i)}
+                style={{
+                  height: 8, width: i === activeTestimonial ? 28 : 8,
+                  borderRadius: 99, border: "none", cursor: "pointer",
+                  background: i === activeTestimonial ? C.teal : "#d1d5db",
+                  transition: "all 0.25s", padding: 0,
+                }} />
+            ))}
           </div>
         </div>
       </section>
 
       {/* ─── FINAL CTA ─── */}
-      <section className="py-24">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 text-center">
+      <section style={{ padding: "5rem 0" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", padding: "0 1.5rem" }}>
           <motion.div
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="relative rounded-3xl border border-primary/20 bg-gradient-to-b from-primary/10 to-transparent p-12 overflow-hidden">
-            {/* Background glow */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-64 bg-primary/15 rounded-full blur-3xl" />
-
-            <div className="relative">
-              <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mx-auto mb-6 shadow-lg shadow-primary/30">
-                <Activity className="w-8 h-8 text-black" />
+            initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+            style={{
+              background: `linear-gradient(135deg, ${C.teal} 0%, #0f766e 100%)`,
+              borderRadius: "1.5rem", padding: "4rem 2rem", textAlign: "center",
+              boxShadow: "0 20px 60px rgba(13,148,136,0.3)",
+              position: "relative", overflow: "hidden",
+            }}>
+            {/* Subtle pattern */}
+            <div style={{ position: "absolute", inset: 0, opacity: 0.06, backgroundImage: "radial-gradient(circle at 20% 20%, white 1px, transparent 1px), radial-gradient(circle at 80% 80%, white 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
+            <div style={{ position: "relative" }}>
+              <div style={{ width: 60, height: 60, borderRadius: "1rem", background: "rgba(255,255,255,0.2)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1.5rem" }}>
+                <Activity size={30} color="#fff" />
               </div>
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
-                Ready to transform<br />your hospital operations?
+              <h2 style={{ fontSize: "2rem", fontWeight: 900, color: "#fff", marginBottom: "0.875rem", letterSpacing: "-0.02em" }}>
+                Ready to transform your<br />hospital operations?
               </h2>
-              <p className="text-muted-foreground mb-8 max-w-md mx-auto">
+              <p style={{ color: "rgba(255,255,255,0.8)", marginBottom: "2rem", lineHeight: 1.7, maxWidth: "440px", margin: "0 auto 2rem" }}>
                 Sign in with a demo account — no setup required. Explore every module with live seeded data in under 2 minutes.
               </p>
-
-              <div className="flex flex-wrap justify-center gap-3">
+              <div style={{ display: "flex", gap: "0.875rem", justifyContent: "center", flexWrap: "wrap" }}>
                 <button onClick={goLogin}
-                  className="flex items-center gap-2 px-8 py-4 rounded-xl bg-primary text-black font-bold hover:bg-primary/90 transition-all hover:scale-105 active:scale-100 shadow-lg shadow-primary/30">
-                  <Play className="w-4 h-4 fill-black" /> Launch Demo Now
+                  style={{ background: "#fff", color: C.teal, fontWeight: 800, fontSize: "0.9rem", padding: "0.875rem 2rem", borderRadius: "0.75rem", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem", boxShadow: "0 4px 16px rgba(0,0,0,0.15)" }}>
+                  <Play size={15} fill={C.teal} /> Launch Demo Now
                 </button>
                 <button onClick={goLogin}
-                  className="flex items-center gap-2 px-8 py-4 rounded-xl border border-white/10 bg-white/5 text-white font-semibold hover:bg-white/10 transition-all hover:scale-105 active:scale-100">
-                  <BriefcaseMedical className="w-4 h-4" /> Request Enterprise Plan
+                  style={{ background: "rgba(255,255,255,0.15)", color: "#fff", fontWeight: 700, fontSize: "0.9rem", padding: "0.875rem 2rem", borderRadius: "0.75rem", border: "1.5px solid rgba(255,255,255,0.4)", cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem", backdropFilter: "blur(4px)" }}>
+                  <BriefcaseMedical size={15} /> Enterprise Plan
                 </button>
               </div>
-
-              <div className="flex flex-wrap justify-center gap-6 mt-8 text-xs text-muted-foreground">
-                {["Free demo access", "No credit card", "HIPAA-ready infrastructure", "Dedicated onboarding"].map((t) => (
-                  <div key={t} className="flex items-center gap-1.5">
-                    <Check className="w-3.5 h-3.5 text-primary" /> {t}
+              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "1.5rem", marginTop: "1.75rem" }}>
+                {["Free demo access", "No credit card", "HIPAA-ready", "Dedicated onboarding"].map((t) => (
+                  <div key={t} style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.8rem", color: "rgba(255,255,255,0.85)" }}>
+                    <Check size={14} color="#fff" /> {t}
                   </div>
                 ))}
               </div>
@@ -516,19 +602,26 @@ export default function Home() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="border-t border-white/5 py-10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2.5">
-            <div className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center">
-              <Activity className="w-3.5 h-3.5 text-black" />
+      <footer style={{ background: C.navy, padding: "2.5rem 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div className="footer-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
+              <div style={{ width: 30, height: 30, borderRadius: "0.5rem", background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                <Activity size={15} color="#fff" />
+              </div>
+              <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
             </div>
-            <span className="text-sm font-bold text-foreground">MediCore <span className="text-primary">HIMS</span></span>
-          </div>
-          <p className="text-xs text-muted-foreground">© 2026 MediCore HIMS. All rights reserved. Built for modern healthcare.</p>
-          <div className="flex gap-4 text-xs text-muted-foreground">
-            <button onClick={goLogin} className="hover:text-foreground transition-colors">Sign In</button>
-            <a href="#modules" className="hover:text-foreground transition-colors">Modules</a>
-            <a href="#features" className="hover:text-foreground transition-colors">Features</a>
+            <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 MediCore HIMS. All rights reserved.</p>
+            <div style={{ display: "flex", gap: "1.5rem" }}>
+              {["Sign In", "Modules", "Features"].map((l) => (
+                <button key={l} onClick={l === "Sign In" ? goLogin : undefined}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: "#94a3b8", fontSize: "0.8rem", padding: 0, transition: "color 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = "#fff")}
+                  onMouseLeave={e => (e.currentTarget.style.color = "#94a3b8")}>
+                  {l}
+                </button>
+              ))}
+            </div>
           </div>
         </div>
       </footer>
