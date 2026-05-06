@@ -137,14 +137,30 @@ export default function Home() {
           </div>
 
           {/* Desktop links */}
-          <div style={{ display: "flex", gap: "2rem", alignItems: "center" }} className="hide-mobile">
-            {["Modules", "Features", "How It Works", "Testimonials"].map((l) => (
-              <a key={l} href={`#${l.toLowerCase().replace(/ /g, "")}`}
-                style={{ color: C.body, fontSize: "0.875rem", fontWeight: 500, textDecoration: "none", transition: "color 0.15s" }}
-                onMouseEnter={e => (e.currentTarget.style.color = C.teal)}
-                onMouseLeave={e => (e.currentTarget.style.color = C.body)}>
-                {l}
-              </a>
+          <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }} className="hide-mobile">
+            {[
+              { label: "Modules",      href: "#modules",      route: null },
+              { label: "Integrations", href: "/integrations", route: true },
+              { label: "Facilities",   href: "/facilities",   route: true },
+              { label: "Teams",        href: "/teams",        route: true },
+              { label: "Pricing",      href: "/pricing",      route: true },
+            ].map((l) => (
+              l.route ? (
+                <button key={l.label}
+                  onClick={() => setLocation(l.href)}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: C.body, fontSize: "0.875rem", fontWeight: 500, padding: "0.5rem 0.75rem", transition: "color 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = C.teal)}
+                  onMouseLeave={e => (e.currentTarget.style.color = C.body)}>
+                  {l.label}
+                </button>
+              ) : (
+                <a key={l.label} href={l.href}
+                  style={{ color: C.body, fontSize: "0.875rem", fontWeight: 500, textDecoration: "none", padding: "0.5rem 0.75rem", transition: "color 0.15s" }}
+                  onMouseEnter={e => (e.currentTarget.style.color = C.teal)}
+                  onMouseLeave={e => (e.currentTarget.style.color = C.body)}>
+                  {l.label}
+                </a>
+              )
             ))}
           </div>
 
@@ -169,9 +185,17 @@ export default function Home() {
           {mobileOpen && (
             <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -8 }}
               style={{ borderTop: `1px solid ${C.border}`, background: "#fff", padding: "1rem 1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-              {["Modules", "Features", "How It Works", "Testimonials"].map((l) => (
-                <a key={l} href={`#${l.toLowerCase().replace(/ /g, "")}`} onClick={() => setMobileOpen(false)}
-                  style={{ color: C.body, fontSize: "0.9rem", textDecoration: "none", padding: "0.5rem 0" }}>{l}</a>
+              <a href="#modules" onClick={() => setMobileOpen(false)} style={{ color: C.body, fontSize: "0.9rem", textDecoration: "none", padding: "0.5rem 0" }}>Modules</a>
+              {[
+                { label: "Integrations", href: "/integrations" },
+                { label: "Facilities",   href: "/facilities" },
+                { label: "Teams",        href: "/teams" },
+                { label: "Pricing",      href: "/pricing" },
+              ].map((l) => (
+                <button key={l.label} onClick={() => { setMobileOpen(false); setLocation(l.href); }}
+                  style={{ background: "none", border: "none", cursor: "pointer", color: C.body, fontSize: "0.9rem", textAlign: "left", padding: "0.5rem 0" }}>
+                  {l.label}
+                </button>
               ))}
               <button onClick={goLogin} style={{ ...btnPrimary, marginTop: "0.5rem", justifyContent: "center" }}>
                 Sign In / Get Demo

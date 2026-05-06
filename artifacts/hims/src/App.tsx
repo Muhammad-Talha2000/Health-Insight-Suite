@@ -6,28 +6,29 @@ import { ThemeProvider } from "@/components/ui/theme-provider";
 import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
-// Pages
-import Home from "@/pages/home";
-import Login from "@/pages/login";
-import Dashboard from "@/pages/dashboard";
-import Patients from "@/pages/patients";
-import OPD from "@/pages/opd";
-import IPD from "@/pages/ipd";
-import Emergency from "@/pages/emergency";
-import Pharmacy from "@/pages/pharmacy";
+// Marketing pages
+import Home         from "@/pages/home";
+import Integrations from "@/pages/integrations";
+import Facilities   from "@/pages/facilities";
+import Teams        from "@/pages/teams";
+import Pricing      from "@/pages/pricing";
+
+// App pages
+import Login      from "@/pages/login";
+import Dashboard  from "@/pages/dashboard";
+import Patients   from "@/pages/patients";
+import OPD        from "@/pages/opd";
+import IPD        from "@/pages/ipd";
+import Emergency  from "@/pages/emergency";
+import Pharmacy   from "@/pages/pharmacy";
 import Laboratory from "@/pages/laboratory";
-import Billing from "@/pages/billing";
-import Analytics from "@/pages/analytics";
-import NotFound from "@/pages/not-found";
-import Layout from "@/components/layout";
+import Billing    from "@/pages/billing";
+import Analytics  from "@/pages/analytics";
+import NotFound   from "@/pages/not-found";
+import Layout     from "@/components/layout";
 
 const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 10_000,
-    },
-  },
+  defaultOptions: { queries: { retry: 1, staleTime: 10_000 } },
 });
 
 function ProtectedRoute({ component: Component }: { component: React.ComponentType }) {
@@ -35,9 +36,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
   const [, setLocation] = useLocation();
 
   useEffect(() => {
-    if (!isAuthenticated) {
-      setLocation("/login");
-    }
+    if (!isAuthenticated) setLocation("/login");
   }, [isAuthenticated, setLocation]);
 
   if (!isAuthenticated) return null;
@@ -52,8 +51,17 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Home} />
+      {/* Marketing */}
+      <Route path="/"             component={Home} />
+      <Route path="/integrations" component={Integrations} />
+      <Route path="/facilities"   component={Facilities} />
+      <Route path="/teams"        component={Teams} />
+      <Route path="/pricing"      component={Pricing} />
+
+      {/* Auth */}
       <Route path="/login" component={Login} />
+
+      {/* Protected app */}
       <Route path="/dashboard"><ProtectedRoute component={Dashboard} /></Route>
       <Route path="/patients"><ProtectedRoute component={Patients} /></Route>
       <Route path="/opd"><ProtectedRoute component={OPD} /></Route>
@@ -63,6 +71,7 @@ function Router() {
       <Route path="/laboratory"><ProtectedRoute component={Laboratory} /></Route>
       <Route path="/billing"><ProtectedRoute component={Billing} /></Route>
       <Route path="/analytics"><ProtectedRoute component={Analytics} /></Route>
+
       <Route component={NotFound} />
     </Switch>
   );
