@@ -43,7 +43,7 @@ export function useAuth() {
   const logout = useCallback(() => {
     localStorage.removeItem(AUTH_KEY);
     setUser(null);
-    setLocation("/");
+    setLocation("/login");
   }, [setLocation]);
 
   return { user, isAuthenticated: !!user, login, logout };

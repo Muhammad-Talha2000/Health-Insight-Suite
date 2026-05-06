@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useAuth } from "@/hooks/use-auth";
 
 // Pages
+import Home from "@/pages/home";
 import Login from "@/pages/login";
 import Dashboard from "@/pages/dashboard";
 import Patients from "@/pages/patients";
@@ -35,7 +36,7 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 
   useEffect(() => {
     if (!isAuthenticated) {
-      setLocation("/");
+      setLocation("/login");
     }
   }, [isAuthenticated, setLocation]);
 
@@ -51,7 +52,8 @@ function ProtectedRoute({ component: Component }: { component: React.ComponentTy
 function Router() {
   return (
     <Switch>
-      <Route path="/" component={Login} />
+      <Route path="/" component={Home} />
+      <Route path="/login" component={Login} />
       <Route path="/dashboard"><ProtectedRoute component={Dashboard} /></Route>
       <Route path="/patients"><ProtectedRoute component={Patients} /></Route>
       <Route path="/opd"><ProtectedRoute component={OPD} /></Route>

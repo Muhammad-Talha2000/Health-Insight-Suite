@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Activity, Eye, EyeOff, LogIn, Shield, Stethoscope } from "lucide-react";
+import { Activity, ArrowLeft, Eye, EyeOff, LogIn, Shield, Stethoscope } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
+import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,6 +17,7 @@ const DEMO_CREDS = [
 
 export default function Login() {
   const { login } = useAuth();
+  const [, setLocation] = useLocation();
   const [username, setUsername] = useState("admin");
   const [password, setPassword] = useState("hims2026");
   const [showPassword, setShowPassword] = useState(false);
@@ -101,6 +103,14 @@ export default function Login() {
           transition={{ duration: 0.5 }}
           className="w-full max-w-md"
         >
+          {/* Back to home */}
+          <button
+            onClick={() => setLocation("/")}
+            className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-8"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Back to home
+          </button>
+
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-2 mb-8">
             <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
