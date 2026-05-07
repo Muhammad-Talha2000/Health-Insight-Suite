@@ -25,6 +25,8 @@
 #     - typescript
 #
 # ============================================================================
+
+registry: https://registry.npmjs.org/
 minimumReleaseAge: 0
 resolution-mode: highest
 
