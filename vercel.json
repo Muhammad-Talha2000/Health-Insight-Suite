@@ -1,11 +1,5 @@
 {
-  "buildCommand": "pnpm run build",
-  "outputDirectory": "artifacts/hims/dist",
-  "installCommand": "pnpm install --frozen-lockfile",
-  "env": {
-    "PORT": "@port",
-    "BASE_PATH": "@base_path"
-  },
-  "regions": ["iad1"],
-  "public": false
+  "installCommand": "pnpm install --ignore-scripts",
+  "buildCommand": "pnpm --filter @workspace/hims run build",
+  "outputDirectory": "artifacts/hims/dist/public"
 }
