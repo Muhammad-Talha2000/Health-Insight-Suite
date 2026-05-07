@@ -1,0 +1,50 @@
+export const admissionsData = [
+  {
+    "id": 1,
+    "patient_id": 1,
+    "patient_name": "Ahmad Hassan",
+    "doctor_id": 1,
+    "doctor_name": "Dr. Faisal Qureshi",
+    "bed_id": 1,
+    "bed_number": "GWA-01",
+    "ward": "General Ward A",
+    "admission_date": "2026-05-01",
+    "discharge_date": null,
+    "admitting_diagnosis": "Uncontrolled Type 2 Diabetes with Hyperglycemia",
+    "status": "active",
+    "notes": "IV insulin drip started, monitoring glucose 4-hourly",
+    "created_at": "2026-05-04T20:19:36.209Z"
+  },
+  {
+    "id": 2,
+    "patient_id": 3,
+    "patient_name": "Muhammad Ali",
+    "doctor_id": 2,
+    "doctor_name": "Dr. Amna Siddiqui",
+    "bed_id": 3,
+    "bed_number": "GWA-03",
+    "ward": "General Ward A",
+    "admission_date": "2026-05-04",
+    "discharge_date": null,
+    "admitting_diagnosis": "Acute Exacerbation of Chronic Kidney Disease",
+    "status": "active",
+    "notes": "Nephrology consult requested, monitoring electrolytes",
+    "created_at": "2026-05-04T20:19:41.053Z"
+  },
+  {
+    "id": 3,
+    "patient_id": 5,
+    "patient_name": "Khalid Rehman",
+    "doctor_id": 3,
+    "doctor_name": "Dr. Tariq Hussain",
+    "bed_id": 17,
+    "bed_number": "CAR-01",
+    "ward": "Cardiology",
+    "admission_date": "2026-04-27",
+    "discharge_date": null,
+    "admitting_diagnosis": "Unstable Angina — NSTEMI ruled out",
+    "status": "active",
+    "notes": "Cardiac monitoring, antiplatelet therapy",
+    "created_at": "2026-05-04T20:19:45.344Z"
+  }
+];
