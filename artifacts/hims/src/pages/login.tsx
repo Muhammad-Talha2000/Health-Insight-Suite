@@ -64,9 +64,7 @@ export default function Login() {
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "auto" }}>
-          <div style={{ width: 42, height: 42, borderRadius: 12, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 4px 14px rgba(13,148,136,0.35)" }}>
-            <Activity size={22} color="#fff" />
-          </div>
+          <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 42, width: "auto" }} />
           <div>
             <div style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy, lineHeight: 1 }}>MediCore <span style={{ color: C.teal }}>HIMS</span></div>
             <div style={{ fontSize: "0.7rem", color: C.body }}>Hospital Information System</div>
@@ -132,9 +130,7 @@ export default function Login() {
 
           {/* Mobile logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "2rem" }} className="login-mobile-logo">
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Activity size={18} color="#fff" />
-            </div>
+            <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 34, width: "auto" }} />
             <span style={{ fontWeight: 800, color: C.navy }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 

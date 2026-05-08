@@ -130,9 +130,7 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <div style={{ width: 34, height: 34, borderRadius: 10, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Activity size={18} color="#fff" />
-            </div>
+            <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 42, width: "auto" }} />
             <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 
@@ -630,9 +628,7 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
           <div className="footer-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-              <div style={{ width: 30, height: 30, borderRadius: "0.5rem", background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <Activity size={15} color="#fff" />
-              </div>
+              <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 36, width: "auto" }} />
               <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
             </div>
             <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 MediCore HIMS. All rights reserved.</p>
