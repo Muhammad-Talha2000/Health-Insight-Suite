@@ -46,7 +46,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         {(!collapsed || mobile) && (
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontWeight: 800, fontSize: "0.875rem", color: "#0f2027", lineHeight: 1 }}>Pulse Healthcare</div>
-            <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}>HIMS 2026</div>
+            <div style={{ fontSize: "0.65rem", color: "#9ca3af" }}></div>
           </div>
         )}
         {!mobile && (

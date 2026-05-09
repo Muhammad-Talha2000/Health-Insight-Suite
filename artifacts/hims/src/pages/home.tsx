@@ -131,7 +131,7 @@ export default function Home() {
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
             <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 42, width: "auto" }} />
-            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
+            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}></span></span>
           </div>
 
           {/* Desktop links */}
@@ -629,7 +629,7 @@ export default function Home() {
           <div className="footer-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
               <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 36, width: "auto" }} />
-              <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
+              <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>Pulse Healthcare <span style={{ color: C.teal }}></span></span>
             </div>
             <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare. All rights reserved.</p>
             <div style={{ display: "flex", gap: "1.5rem" }}>
