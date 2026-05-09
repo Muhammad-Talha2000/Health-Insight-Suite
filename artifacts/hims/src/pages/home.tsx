@@ -85,7 +85,7 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "MediCore HIMS cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Ayesha Rahman", role: "Medical Director, Shifa Hospital" },
+  { quote: "Pulse Healthcare HIMS cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Ayesha Rahman", role: "Medical Director, Shifa Hospital" },
   { quote: "The bed management grid lets our nursing staff see every ward at a glance. Discharge planning has never been smoother.", name: "Muhammad Ali Khan", role: "Head of Operations, Aga Khan Health" },
   { quote: "Our billing team processes 3× more invoices per day. The workflow is clean and the analytics save us hours every week.", name: "Sana Mirza", role: "CFO, South City Hospital" },
 ];
@@ -130,8 +130,8 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 42, width: "auto" }} />
-            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
+            <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 42, width: "auto" }} />
+            <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 
           {/* Desktop links */}
@@ -260,7 +260,7 @@ export default function Home() {
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15 }}
                 style={{ fontSize: "1.1rem", color: C.body, lineHeight: 1.7, marginBottom: "2rem", maxWidth: "480px" }}>
-                MediCore HIMS unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
+                Pulse Healthcare HIMS unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.2 }}
@@ -297,7 +297,7 @@ export default function Home() {
                     {["#fc5c65","#fed330","#26de81"].map(c => <div key={c} style={{ width: 10, height: 10, borderRadius: "50%", background: c }} />)}
                   </div>
                   <div style={{ flex: 1, marginLeft: "0.5rem", background: "#e2e8f0", borderRadius: "0.375rem", padding: "0.25rem 0.75rem", fontSize: "0.7rem", color: C.muted, fontFamily: "monospace" }}>
-                    medicore.hospital/dashboard
+                    pulsehealthcare.hospital/dashboard
                   </div>
                 </div>
 
@@ -461,7 +461,7 @@ export default function Home() {
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }} className="hero-grid">
             <div>
               <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "#f5f3ff", color: "#7c3aed", fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem" }}>
-                <Star size={12} /> Why MediCore
+                <Star size={12} /> Why Pulse Healthcare
               </span>
               <h2 style={{ fontSize: "2.1rem", fontWeight: 900, color: C.navy, marginBottom: "1rem", lineHeight: 1.2, letterSpacing: "-0.02em" }}>
                 Built for the way hospitals<br />
@@ -628,10 +628,10 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
           <div className="footer-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-              <img src="/logo1.png" alt="MediCore HIMS" style={{ height: 36, width: "auto" }} />
-              <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>MediCore <span style={{ color: C.teal }}>HIMS</span></span>
+              <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 36, width: "auto" }} />
+              <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
             </div>
-            <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 MediCore HIMS. All rights reserved.</p>
+            <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare HIMS. All rights reserved.</p>
             <div style={{ display: "flex", gap: "1.5rem" }}>
               {["Sign In", "Modules", "Features"].map((l) => (
                 <button key={l} onClick={l === "Sign In" ? goLogin : undefined}

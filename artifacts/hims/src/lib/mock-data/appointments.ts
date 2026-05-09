@@ -2,7 +2,7 @@ export const appointmentsData = [
   {
     "id": 1,
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "department": "Internal Medicine",
@@ -17,7 +17,7 @@ export const appointmentsData = [
   {
     "id": 2,
     "patient_id": 2,
-    "patient_name": "Sara Khan",
+    "patient_name": "Sarah Anderson",
     "doctor_id": 4,
     "doctor_name": "Dr. Nadia Omer",
     "department": "Pulmonology",
@@ -32,7 +32,7 @@ export const appointmentsData = [
   {
     "id": 3,
     "patient_id": 4,
-    "patient_name": "Ayesha Malik",
+    "patient_name": "Emma Wilson",
     "doctor_id": 5,
     "doctor_name": "Dr. Bilal Ahmed",
     "department": "General Surgery",
@@ -47,7 +47,7 @@ export const appointmentsData = [
   {
     "id": 4,
     "patient_id": 3,
-    "patient_name": "Muhammad Ali",
+    "patient_name": "Michael Brown",
     "doctor_id": 2,
     "doctor_name": "Dr. Amna Siddiqui",
     "department": "Nephrology",
@@ -62,7 +62,7 @@ export const appointmentsData = [
   {
     "id": 5,
     "patient_id": 6,
-    "patient_name": "Zara Ahmed",
+    "patient_name": "Elizabeth Taylor",
     "doctor_id": 6,
     "doctor_name": "Dr. Sana Yousuf",
     "department": "Gynecology",
@@ -77,7 +77,7 @@ export const appointmentsData = [
   {
     "id": 6,
     "patient_id": 7,
-    "patient_name": "Tariq Bashir",
+    "patient_name": "William Miller",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "department": "Cardiology",
@@ -92,7 +92,7 @@ export const appointmentsData = [
   {
     "id": 7,
     "patient_id": 8,
-    "patient_name": "Nadia Iqbal",
+    "patient_name": "Jennifer Thomas",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "department": "Endocrinology",

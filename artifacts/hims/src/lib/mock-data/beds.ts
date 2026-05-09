@@ -7,7 +7,7 @@ export const bedsData = [
     "floor": "Ground",
     "status": "occupied",
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "bed_type": "general"
   },
   {
@@ -18,7 +18,7 @@ export const bedsData = [
     "floor": "Ground",
     "status": "occupied",
     "patient_id": 2,
-    "patient_name": "Sara Khan",
+    "patient_name": "Sarah Anderson",
     "bed_type": "general"
   },
   {
@@ -29,7 +29,7 @@ export const bedsData = [
     "floor": "Ground",
     "status": "occupied",
     "patient_id": 3,
-    "patient_name": "Muhammad Ali",
+    "patient_name": "Michael Brown",
     "bed_type": "general"
   },
   {
@@ -117,7 +117,7 @@ export const bedsData = [
     "floor": "Ground",
     "status": "occupied",
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "bed_type": "ICU"
   },
   {
@@ -183,7 +183,7 @@ export const bedsData = [
     "floor": "First",
     "status": "occupied",
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "bed_type": "general"
   },
   {

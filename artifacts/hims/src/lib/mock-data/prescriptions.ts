@@ -2,7 +2,7 @@ export const prescriptionsData = [
   {
     "id": 1,
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "consultation_id": null,
@@ -18,7 +18,7 @@ export const prescriptionsData = [
   {
     "id": 2,
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "consultation_id": null,
@@ -34,7 +34,7 @@ export const prescriptionsData = [
   {
     "id": 3,
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "consultation_id": null,
@@ -50,7 +50,7 @@ export const prescriptionsData = [
   {
     "id": 4,
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "consultation_id": null,
@@ -66,7 +66,7 @@ export const prescriptionsData = [
   {
     "id": 5,
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "consultation_id": null,
@@ -82,7 +82,7 @@ export const prescriptionsData = [
   {
     "id": 6,
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "consultation_id": null,
@@ -98,7 +98,7 @@ export const prescriptionsData = [
   {
     "id": 7,
     "patient_id": 2,
-    "patient_name": "Sara Khan",
+    "patient_name": "Sarah Anderson",
     "doctor_id": 4,
     "doctor_name": "Dr. Nadia Omer",
     "consultation_id": null,
@@ -114,7 +114,7 @@ export const prescriptionsData = [
   {
     "id": 8,
     "patient_id": 2,
-    "patient_name": "Sara Khan",
+    "patient_name": "Sarah Anderson",
     "doctor_id": 4,
     "doctor_name": "Dr. Nadia Omer",
     "consultation_id": null,
@@ -130,7 +130,7 @@ export const prescriptionsData = [
   {
     "id": 9,
     "patient_id": 3,
-    "patient_name": "Muhammad Ali",
+    "patient_name": "Michael Brown",
     "doctor_id": 2,
     "doctor_name": "Dr. Amna Siddiqui",
     "consultation_id": null,
@@ -146,7 +146,7 @@ export const prescriptionsData = [
   {
     "id": 10,
     "patient_id": 7,
-    "patient_name": "Tariq Bashir",
+    "patient_name": "William Miller",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "consultation_id": null,

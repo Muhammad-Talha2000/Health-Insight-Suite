@@ -90,7 +90,7 @@ export default function Teams() {
               <span style={{ color: C.teal }}>every member of your team</span>
             </h1>
             <p style={{ fontSize: "1.05rem", color: C.body, lineHeight: 1.75, maxWidth: 500 }}>
-              MediCore provides purpose-built workflows for each hospital role — from doctors and nurses to finance teams and lab technicians.
+              Pulse Healthcare provides purpose-built workflows for each hospital role — from doctors and nurses to finance teams and lab technicians.
             </p>
           </motion.div>
         </div>

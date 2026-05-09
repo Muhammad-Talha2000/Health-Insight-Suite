@@ -13,7 +13,7 @@ const FACILITIES = [
     icon: Building2, color: "#3b82f6", bg: "#eff6ff",
     label: "Government Hospitals",
     tagline: "Scale across entire districts",
-    desc: "Built to handle thousands of daily patients across multiple departments. MediCore's centralized records, multi-ward IPD management, and real-time dashboards keep large government hospitals running at full efficiency.",
+    desc: "Built to handle thousands of daily patients across multiple departments. Pulse Healthcare's centralized records, multi-ward IPD management, and real-time dashboards keep large government hospitals running at full efficiency.",
     features: ["Unlimited patient throughput", "Multi-ward IPD management", "District-level reporting", "Audit-ready records", "Role-based staff access"],
   },
   {
@@ -48,7 +48,7 @@ const FACILITIES = [
     icon: Heart, color: "#db2777", bg: "#fdf2f8",
     label: "Specialty Clinics",
     tagline: "Designed around your specialty",
-    desc: "Whether cardiology, oncology, or orthopaedics — MediCore adapts to your workflow. Custom module bundles, specialty-specific clinical notes, and referral management built in.",
+    desc: "Whether cardiology, oncology, or orthopaedics — Pulse Healthcare adapts to your workflow. Custom module bundles, specialty-specific clinical notes, and referral management built in.",
     features: ["Custom module bundles", "Specialty clinical notes", "Referral management", "Follow-up scheduling", "Patient outcome tracking"],
   },
 ];
@@ -80,7 +80,7 @@ export default function Facilities() {
               <span style={{ color: C.teal }}>Every type of healthcare facility.</span>
             </h1>
             <p style={{ fontSize: "1.05rem", color: C.body, lineHeight: 1.75, maxWidth: 520, marginBottom: "2rem" }}>
-              MediCore HIMS is purpose-built to serve the full spectrum of healthcare — from 800-bed government hospitals to single-doctor specialty clinics.
+              Pulse Healthcare HIMS is purpose-built to serve the full spectrum of healthcare — from 800-bed government hospitals to single-doctor specialty clinics.
             </p>
             <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap" }}>
               <button onClick={() => setLocation("/login")}

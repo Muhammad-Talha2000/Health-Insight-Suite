@@ -2,7 +2,7 @@ export const emergencyData = [
   {
     "id": 1,
     "patient_id": null,
-    "patient_name": "Usman Farooq",
+    "patient_name": "Joseph Moore",
     "age": 55,
     "gender": "male",
     "chief_complaint": "Severe chest pain radiating to left arm, diaphoresis",
@@ -23,7 +23,7 @@ export const emergencyData = [
   {
     "id": 2,
     "patient_id": null,
-    "patient_name": "Hina Baig",
+    "patient_name": "Rachel Green",
     "age": 28,
     "gender": "female",
     "chief_complaint": "Sudden onset thunderclap headache, vomiting x3",
@@ -44,7 +44,7 @@ export const emergencyData = [
   {
     "id": 3,
     "patient_id": null,
-    "patient_name": "Shahzad Mirza",
+    "patient_name": "James White",
     "age": 42,
     "gender": "male",
     "chief_complaint": "RTA — deep laceration left thigh, active bleeding",
@@ -65,7 +65,7 @@ export const emergencyData = [
   {
     "id": 4,
     "patient_id": null,
-    "patient_name": "Rubia Anwar",
+    "patient_name": "Jessica Harris",
     "age": 35,
     "gender": "female",
     "chief_complaint": "Severe allergic reaction, facial swelling, urticaria",
@@ -86,7 +86,7 @@ export const emergencyData = [
   {
     "id": 5,
     "patient_id": null,
-    "patient_name": "Imtiaz Sheikh",
+    "patient_name": "Richard Martin",
     "age": 68,
     "gender": "male",
     "chief_complaint": "Acute confusion, slurred speech, right-sided weakness",
@@ -107,7 +107,7 @@ export const emergencyData = [
   {
     "id": 6,
     "patient_id": null,
-    "patient_name": "Mehwish Raza",
+    "patient_name": "Angela Clark",
     "age": 22,
     "gender": "female",
     "chief_complaint": "Severe abdominal pain, guarding, rebound tenderness",
@@ -128,7 +128,7 @@ export const emergencyData = [
   {
     "id": 7,
     "patient_id": null,
-    "patient_name": "Babar Khan",
+    "patient_name": "Daniel Rodriguez",
     "age": 45,
     "gender": "male",
     "chief_complaint": "Difficulty breathing, wheeze, known asthmatic",

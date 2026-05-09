@@ -6,11 +6,11 @@ async function seed() {
 
   // Patients
   const patients = await db.insert(patientsTable).values([
-    { mrNumber: "MR-2026-100001", firstName: "Ahmad", lastName: "Hassan", dateOfBirth: "1985-03-15", gender: "male", bloodGroup: "O+", phone: "+92-300-1234567", email: "ahmad.hassan@email.com", address: "House 12, Block B, Gulshan, Karachi", allergies: "Penicillin", chronicConditions: "Hypertension, Type 2 Diabetes", emergencyContactName: "Fatima Hassan", emergencyContactPhone: "+92-300-7654321" },
-    { mrNumber: "MR-2026-100002", firstName: "Sara", lastName: "Khan", dateOfBirth: "1992-07-22", gender: "female", bloodGroup: "A+", phone: "+92-333-9876543", email: "sara.khan@email.com", address: "Flat 5, DHA Phase 4, Lahore", allergies: null, chronicConditions: "Asthma", emergencyContactName: "Imran Khan", emergencyContactPhone: "+92-333-1234500" },
-    { mrNumber: "MR-2026-100003", firstName: "Muhammad", lastName: "Ali", dateOfBirth: "1978-11-08", gender: "male", bloodGroup: "B+", phone: "+92-321-5554444", email: null, address: "G-9/2, Islamabad", allergies: "Sulfa drugs", chronicConditions: "Chronic Kidney Disease Stage 3", emergencyContactName: "Zainab Ali", emergencyContactPhone: "+92-321-6663333" },
-    { mrNumber: "MR-2026-100004", firstName: "Ayesha", lastName: "Malik", dateOfBirth: "1995-01-30", gender: "female", bloodGroup: "AB+", phone: "+92-345-7778888", email: "ayesha.m@gmail.com", address: "Cantt Area, Rawalpindi", allergies: null, chronicConditions: null, emergencyContactName: "Usman Malik", emergencyContactPhone: "+92-345-0001111" },
-    { mrNumber: "MR-2026-100005", firstName: "Khalid", lastName: "Rehman", dateOfBirth: "1960-09-12", gender: "male", bloodGroup: "O-", phone: "+92-300-3332222", email: null, address: "Model Town, Lahore", allergies: "NSAIDs", chronicConditions: "COPD, Hypertension, Ischemic Heart Disease", emergencyContactName: "Nasreen Rehman", emergencyContactPhone: "+92-300-1110000" },
+    { mrNumber: "MR-2026-100001", firstName: "David", lastName: "Johnson", dateOfBirth: "1985-03-15", gender: "male", bloodGroup: "O+", phone: "+92-300-1234567", email: "david.johnson@email.com", address: "House 12, Block B, Gulshan, Karachi", allergies: "Penicillin", chronicConditions: "Hypertension, Type 2 Diabetes", emergencyContactName: "Mary Johnson", emergencyContactPhone: "+92-300-7654321" },
+    { mrNumber: "MR-2026-100002", firstName: "Sarah", lastName: "Anderson", dateOfBirth: "1992-07-22", gender: "female", bloodGroup: "A+", phone: "+92-333-9876543", email: "sarah.anderson@email.com", address: "Flat 5, DHA Phase 4, Lahore", allergies: null, chronicConditions: "Asthma", emergencyContactName: "James Anderson", emergencyContactPhone: "+92-333-1234500" },
+    { mrNumber: "MR-2026-100003", firstName: "Michael", lastName: "Brown", dateOfBirth: "1978-11-08", gender: "male", bloodGroup: "B+", phone: "+92-321-5554444", email: null, address: "G-9/2, Islamabad", allergies: "Sulfa drugs", chronicConditions: "Chronic Kidney Disease Stage 3", emergencyContactName: "Lisa Brown", emergencyContactPhone: "+92-321-6663333" },
+    { mrNumber: "MR-2026-100004", firstName: "Emma", lastName: "Wilson", dateOfBirth: "1995-01-30", gender: "female", bloodGroup: "AB+", phone: "+92-345-7778888", email: "emma.w@gmail.com", address: "Cantt Area, Rawalpindi", allergies: null, chronicConditions: null, emergencyContactName: "John Wilson", emergencyContactPhone: "+92-345-0001111" },
+    { mrNumber: "MR-2026-100005", firstName: "Christopher", lastName: "Davis", dateOfBirth: "1960-09-12", gender: "male", bloodGroup: "O-", phone: "+92-300-3332222", email: null, address: "Model Town, Lahore", allergies: "NSAIDs", chronicConditions: "COPD, Hypertension, Ischemic Heart Disease", emergencyContactName: "Patricia Davis", emergencyContactPhone: "+92-300-1110000" },
   ]).returning();
 
   console.log(`Seeded ${patients.length} patients`);
@@ -103,9 +103,9 @@ async function seed() {
 
   // Emergency Cases
   await db.insert(emergencyCasesTable).values([
-    { patientName: "Usman Farooq", age: 55, gender: "male", chiefComplaint: "Severe chest pain radiating to left arm, sweating", triage: "immediate", bpSystolic: 90, bpDiastolic: 60, pulse: 110, temperature: 37.0, spo2: 92, status: "active", assignedDoctorId: 3, assignedDoctorName: "Dr. Tariq Hussain" },
-    { patientName: "Hina Baig", age: 28, gender: "female", chiefComplaint: "Sudden onset severe headache, vomiting", triage: "very-urgent", bpSystolic: 180, bpDiastolic: 110, pulse: 95, temperature: 37.2, spo2: 98, status: "active" },
-    { patientName: "Shahzad Mirza", age: 42, gender: "male", chiefComplaint: "Road traffic accident, laceration left leg", triage: "urgent", pulse: 100, temperature: 37.5, spo2: 97, status: "active" },
+    { patientName: "Joseph Moore", age: 55, gender: "male", chiefComplaint: "Severe chest pain radiating to left arm, sweating", triage: "immediate", bpSystolic: 90, bpDiastolic: 60, pulse: 110, temperature: 37.0, spo2: 92, status: "active", assignedDoctorId: 3, assignedDoctorName: "Dr. Tariq Hussain" },
+    { patientName: "Rachel Green", age: 28, gender: "female", chiefComplaint: "Sudden onset severe headache, vomiting", triage: "very-urgent", bpSystolic: 180, bpDiastolic: 110, pulse: 95, temperature: 37.2, spo2: 98, status: "active" },
+    { patientName: "James White", age: 42, gender: "male", chiefComplaint: "Road traffic accident, laceration left leg", triage: "urgent", pulse: 100, temperature: 37.5, spo2: 97, status: "active" },
     { patientId: patients[1].id, patientName: `${patients[1].firstName} ${patients[1].lastName}`, age: 32, gender: "female", chiefComplaint: "Severe asthma attack, difficulty breathing", triage: "very-urgent", bpSystolic: 130, bpDiastolic: 85, pulse: 120, temperature: 37.0, spo2: 88, status: "admitted", disposition: "admitted" },
   ]);
   console.log("Seeded emergency cases");

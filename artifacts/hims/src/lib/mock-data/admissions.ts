@@ -2,7 +2,7 @@ export const admissionsData = [
   {
     "id": 1,
     "patient_id": 1,
-    "patient_name": "Ahmad Hassan",
+    "patient_name": "David Johnson",
     "doctor_id": 1,
     "doctor_name": "Dr. Faisal Qureshi",
     "bed_id": 1,
@@ -18,7 +18,7 @@ export const admissionsData = [
   {
     "id": 2,
     "patient_id": 3,
-    "patient_name": "Muhammad Ali",
+    "patient_name": "Michael Brown",
     "doctor_id": 2,
     "doctor_name": "Dr. Amna Siddiqui",
     "bed_id": 3,
@@ -34,7 +34,7 @@ export const admissionsData = [
   {
     "id": 3,
     "patient_id": 5,
-    "patient_name": "Khalid Rehman",
+    "patient_name": "Christopher Davis",
     "doctor_id": 3,
     "doctor_name": "Dr. Tariq Hussain",
     "bed_id": 17,
