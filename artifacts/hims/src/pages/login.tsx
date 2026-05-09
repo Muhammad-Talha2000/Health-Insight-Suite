@@ -64,7 +64,7 @@ export default function Login() {
 
         {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "auto" }}>
-          <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 42, width: "auto" }} />
+          <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 42, width: "auto" }} />
           <div>
             <div style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy, lineHeight: 1 }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></div>
             <div style={{ fontSize: "0.7rem", color: C.body }}>Hospital Information System</div>
@@ -112,7 +112,7 @@ export default function Login() {
           ))}
         </div>
 
-        <p style={{ color: C.muted, fontSize: "0.7rem", marginTop: "2rem" }}>© 2026 Pulse Healthcare HIMS. All rights reserved.</p>
+        <p style={{ color: C.muted, fontSize: "0.7rem", marginTop: "2rem" }}>© 2026 Pulse Healthcare. All rights reserved.</p>
       </div>
 
       {/* ── Right panel – form ── */}
@@ -130,7 +130,7 @@ export default function Login() {
 
           {/* Mobile logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", marginBottom: "2rem" }} className="login-mobile-logo">
-            <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 34, width: "auto" }} />
+            <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 34, width: "auto" }} />
             <span style={{ fontWeight: 800, color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 

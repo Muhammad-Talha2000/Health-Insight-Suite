@@ -80,7 +80,7 @@ export default function Facilities() {
               <span style={{ color: C.teal }}>Every type of healthcare facility.</span>
             </h1>
             <p style={{ fontSize: "1.05rem", color: C.body, lineHeight: 1.75, maxWidth: 520, marginBottom: "2rem" }}>
-              Pulse Healthcare HIMS is purpose-built to serve the full spectrum of healthcare — from 800-bed government hospitals to single-doctor specialty clinics.
+              Pulse Healthcare is purpose-built to serve the full spectrum of healthcare — from 800-bed government hospitals to single-doctor specialty clinics.
             </p>
             <div style={{ display: "flex", gap: "0.875rem", flexWrap: "wrap" }}>
               <button onClick={() => setLocation("/login")}

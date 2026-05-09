@@ -85,7 +85,7 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "Pulse Healthcare HIMS cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Ayesha Rahman", role: "Medical Director, Shifa Hospital" },
+  { quote: "Pulse Healthcare cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Ayesha Rahman", role: "Medical Director, Shifa Hospital" },
   { quote: "The bed management grid lets our nursing staff see every ward at a glance. Discharge planning has never been smoother.", name: "Muhammad Ali Khan", role: "Head of Operations, Aga Khan Health" },
   { quote: "Our billing team processes 3× more invoices per day. The workflow is clean and the analytics save us hours every week.", name: "Sana Mirza", role: "CFO, South City Hospital" },
 ];
@@ -130,7 +130,7 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", height: "64px" }}>
           {/* Logo */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-            <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 42, width: "auto" }} />
+            <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 42, width: "auto" }} />
             <span style={{ fontWeight: 800, fontSize: "1.1rem", color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
           </div>
 
@@ -260,7 +260,7 @@ export default function Home() {
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15 }}
                 style={{ fontSize: "1.1rem", color: C.body, lineHeight: 1.7, marginBottom: "2rem", maxWidth: "480px" }}>
-                Pulse Healthcare HIMS unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
+                Pulse Healthcare unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.2 }}
@@ -628,10 +628,10 @@ export default function Home() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
           <div className="footer-row" style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.625rem" }}>
-              <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 36, width: "auto" }} />
+              <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 36, width: "auto" }} />
               <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.95rem" }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
             </div>
-            <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare HIMS. All rights reserved.</p>
+            <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare. All rights reserved.</p>
             <div style={{ display: "flex", gap: "1.5rem" }}>
               {["Sign In", "Modules", "Features"].map((l) => (
                 <button key={l} onClick={l === "Sign In" ? goLogin : undefined}

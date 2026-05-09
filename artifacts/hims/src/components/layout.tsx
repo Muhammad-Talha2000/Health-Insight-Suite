@@ -42,7 +42,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
         height: 56, borderBottom: "1px solid #e2e8f0", flexShrink: 0,
         justifyContent: collapsed && !mobile ? "center" : "flex-start",
       }}>
-        <img src="/logo1.png" alt="Pulse Healthcare HIMS" style={{ height: 30, width: "auto", flexShrink: 0 }} />
+        <img src="/logo1.png" alt="Pulse Healthcare" style={{ height: 30, width: "auto", flexShrink: 0 }} />
         {(!collapsed || mobile) && (
           <div style={{ minWidth: 0, flex: 1 }}>
             <div style={{ fontWeight: 800, fontSize: "0.875rem", color: "#0f2027", lineHeight: 1 }}>Pulse Healthcare</div>

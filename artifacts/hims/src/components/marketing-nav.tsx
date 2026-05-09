@@ -31,7 +31,7 @@ export function MarketingNav() {
           <div style={{ width: 34, height: 34, borderRadius: 10, background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Activity size={18} color="#fff" />
           </div>
-          <span style={{ fontWeight: 800, fontSize: "1.05rem", color: C.navy }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
+          <span style={{ fontWeight: 800, fontSize: "1.05rem", color: C.navy }}>Pulse Healthcare</span>
         </button>
 
         {/* Desktop nav */}
@@ -111,9 +111,9 @@ export function MarketingFooter() {
           <div style={{ width: 28, height: 28, borderRadius: "0.5rem", background: C.teal, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Activity size={14} color="#fff" />
           </div>
-          <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.9rem" }}>Pulse Healthcare <span style={{ color: C.teal }}>HIMS</span></span>
+          <span style={{ fontWeight: 800, color: "#fff", fontSize: "0.9rem" }}>Pulse Healthcare <span style={{ color: C.teal }}></span></span>
         </button>
-        <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare HIMS. All rights reserved.</p>
+        <p style={{ color: "#94a3b8", fontSize: "0.78rem" }}>© 2026 Pulse Healthcare. All rights reserved.</p>
         <div style={{ display: "flex", gap: "1.5rem" }}>
           {[["Home","/"], ...NAV_LINKS.map(l => [l.label, l.href])].map(([label, href]) => (
             <button key={href} onClick={() => setLocation(href as string)}

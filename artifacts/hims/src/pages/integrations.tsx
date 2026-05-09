@@ -56,7 +56,7 @@ export default function Integrations() {
           </motion.span>
           <motion.h1 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }}
             style={{ fontSize: "clamp(2rem, 5vw, 3rem)", fontWeight: 900, color: C.navy, marginBottom: "1rem", letterSpacing: "-0.025em", lineHeight: 1.15 }}>
-            Connect Pulse Healthcare HIMS to the tools<br />
+            Connect Pulse Healthcare to the tools<br />
             <span style={{ color: C.teal }}>your hospital already uses</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.14 }}
@@ -132,7 +132,7 @@ export default function Integrations() {
             style={{ background: `linear-gradient(135deg, ${C.teal} 0%, #0f766e 100%)`, borderRadius: "1.5rem", padding: "3.5rem 2rem", textAlign: "center", boxShadow: "0 16px 48px rgba(13,148,136,0.28)" }}>
             <h2 style={{ fontSize: "1.75rem", fontWeight: 900, color: "#fff", marginBottom: "0.75rem" }}>Need a custom integration?</h2>
             <p style={{ color: "rgba(255,255,255,0.8)", marginBottom: "1.75rem", lineHeight: 1.7 }}>
-              Our REST API and webhook system lets you connect Pulse Healthcare HIMS to any system your hospital uses — with zero code required for common workflows.
+              Our REST API and webhook system lets you connect Pulse Healthcare to any system your hospital uses — with zero code required for common workflows.
             </p>
             <button onClick={() => setLocation("/login")}
               style={{ background: "#fff", color: C.teal, fontWeight: 800, fontSize: "0.9rem", padding: "0.875rem 2rem", borderRadius: "0.75rem", border: "none", cursor: "pointer", boxShadow: "0 4px 12px rgba(0,0,0,0.12)" }}>
