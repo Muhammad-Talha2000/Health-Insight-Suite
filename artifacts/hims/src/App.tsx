@@ -24,6 +24,10 @@ import Pharmacy   from "@/pages/pharmacy";
 import Laboratory from "@/pages/laboratory";
 import Billing    from "@/pages/billing";
 import Analytics  from "@/pages/analytics";
+import AIStudio   from "@/pages/ai-studio";
+import AISmartLookup from "@/pages/ai-smart-lookup";
+import AITriage from "@/pages/ai-triage";
+import AIDischarge from "@/pages/ai-discharge";
 import NotFound   from "@/pages/not-found";
 import Layout     from "@/components/layout";
 
@@ -71,6 +75,10 @@ function Router() {
       <Route path="/laboratory"><ProtectedRoute component={Laboratory} /></Route>
       <Route path="/billing"><ProtectedRoute component={Billing} /></Route>
       <Route path="/analytics"><ProtectedRoute component={Analytics} /></Route>
+      <Route path="/ai-studio"><ProtectedRoute component={AIStudio} /></Route>
+      <Route path="/ai-studio/smart-lookup"><ProtectedRoute component={AISmartLookup} /></Route>
+      <Route path="/ai-studio/triage"><ProtectedRoute component={AITriage} /></Route>
+      <Route path="/ai-studio/discharge"><ProtectedRoute component={AIDischarge} /></Route>
 
       <Route component={NotFound} />
     </Switch>

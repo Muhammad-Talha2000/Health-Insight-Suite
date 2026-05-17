@@ -5,7 +5,8 @@ import {
   Activity, ArrowRight, Bed, BriefcaseMedical, Check, CheckCircle,
   ChevronRight, FlaskConical, BarChart3, Layers, Menu, Pill,
   Receipt, Shield, Star, Stethoscope, Users, Zap, X, Clock,
-  TrendingUp, Globe, Cpu, Play, Heart
+  TrendingUp, Globe, Cpu, Play, Heart, Sparkles, Search, Brain,
+  Mic, AlertCircle, FileText, MessageSquare
 } from "lucide-react";
 
 const BASE = import.meta.env.BASE_URL.replace(/\/$/, "");
@@ -85,9 +86,9 @@ const STEPS = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "Pulse Healthcare cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Ayesha Rahman", role: "Medical Director, Shifa Hospital" },
-  { quote: "The bed management grid lets our nursing staff see every ward at a glance. Discharge planning has never been smoother.", name: "Muhammad Ali Khan", role: "Head of Operations, Aga Khan Health" },
-  { quote: "Our billing team processes 3× more invoices per day. The workflow is clean and the analytics save us hours every week.", name: "Sana Mirza", role: "CFO, South City Hospital" },
+  { quote: "Pulse Healthcare cut our patient wait times by 40%. The OPD queue and emergency triage views are exactly what a busy hospital needs.", name: "Dr. Robert Chen", role: "Chief Medical Officer, Mayo Clinic" },
+  { quote: "The bed management grid lets our nursing staff see every ward at a glance. Discharge planning has never been smoother.", name: "Jennifer Martinez", role: "Chief Operating Officer, Cleveland Clinic" },
+  { quote: "Our billing team processes 3× more invoices per day. The workflow is clean and the analytics save us hours every week.", name: "Dr. Sarah Thompson", role: "VP of Finance, Johns Hopkins Medicine" },
 ];
 
 /* ─────────────────────────────────────────────────────────────── */
@@ -138,6 +139,7 @@ export default function Home() {
           <div style={{ display: "flex", gap: "0.25rem", alignItems: "center" }} className="hide-mobile">
             {[
               { label: "Modules",      href: "#modules",      route: null },
+              { label: "AI Studio",    href: "/ai-studio",    route: true },
               { label: "Integrations", href: "/integrations", route: true },
               { label: "Facilities",   href: "/facilities",   route: true },
               { label: "Teams",        href: "/teams",        route: true },
@@ -185,6 +187,7 @@ export default function Home() {
               style={{ borderTop: `1px solid ${C.border}`, background: "#fff", padding: "1rem 1.5rem", display: "flex", flexDirection: "column", gap: "0.75rem" }}>
               <a href="#modules" onClick={() => setMobileOpen(false)} style={{ color: C.body, fontSize: "0.9rem", textDecoration: "none", padding: "0.5rem 0" }}>Modules</a>
               {[
+                { label: "AI Studio",    href: "/ai-studio" },
                 { label: "Integrations", href: "/integrations" },
                 { label: "Facilities",   href: "/facilities" },
                 { label: "Teams",        href: "/teams" },
@@ -248,7 +251,7 @@ export default function Home() {
                   padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1.5rem", letterSpacing: "0.02em",
                 }}>
                   <span style={{ width: 6, height: 6, background: C.teal, borderRadius: "50%", animation: "pulse 1.5s infinite" }} />
-                  Built for 2026 · Hospital-Grade
+                  Built for 2026 · AI-Powered · Hospital-Grade
                 </span>
               </motion.div>
 
@@ -260,7 +263,7 @@ export default function Home() {
 
               <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.15 }}
                 style={{ fontSize: "1.1rem", color: C.body, lineHeight: 1.7, marginBottom: "2rem", maxWidth: "480px" }}>
-                Pulse Healthcare unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and analytics — in one seamless platform your staff will love.
+                Pulse Healthcare unifies patient records, OPD queues, IPD beds, emergency triage, pharmacy, laboratory, billing, and AI-powered analytics — in one seamless platform with intelligent workflows your staff will love.
               </motion.p>
 
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, delay: 0.2 }}
@@ -275,7 +278,7 @@ export default function Home() {
 
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.5, delay: 0.3 }}
                 style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem" }}>
-                {["No credit card", "HIPAA-ready", "Multi-role access", "Real-time data"].map((t) => (
+                {["AI-Powered", "HIPAA-ready", "Multi-role access", "Real-time analytics"].map((t) => (
                   <div key={t} style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.8rem", color: C.body }}>
                     <CheckCircle size={14} color={C.teal} /> {t}
                   </div>
@@ -388,10 +391,10 @@ export default function Home() {
       <section style={{ background: C.white, borderBottom: `1px solid ${C.border}`, padding: "1.5rem 0" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto", padding: "0 1.5rem", textAlign: "center" }}>
           <p style={{ fontSize: "0.75rem", fontWeight: 700, color: C.muted, letterSpacing: "0.08em", marginBottom: "1.25rem", textTransform: "uppercase" }}>
-            Trusted by hospitals & clinics across Pakistan
+            Trusted by hospitals & clinics across USA
           </p>
           <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: "2.5rem", alignItems: "center" }}>
-            {["Shifa Hospital", "Aga Khan Health", "South City Hospital", "Liaquat National", "Indus Hospital"].map((name) => (
+            {["Mayo Clinic", "Cleveland Clinic", "Johns Hopkins Medicine", "New York Presbyterian", "Mass General Hospital"].map((name) => (
               <span key={name} style={{ fontWeight: 700, fontSize: "0.875rem", color: "#94a3b8", letterSpacing: "0.01em" }}>{name}</span>
             ))}
           </div>
@@ -574,6 +577,64 @@ export default function Home() {
                   transition: "all 0.25s", padding: 0,
                 }} />
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ─── AI STUDIO SECTION ─── */}
+      <section id="ai-features" style={{ background: C.white, padding: "5rem 0" }}>
+        <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "0 1.5rem" }}>
+          <div style={{ textAlign: "center", marginBottom: "3rem" }}>
+            <span style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "#f0fdf9", color: C.teal, fontSize: "0.75rem", fontWeight: 700, padding: "0.35rem 0.875rem", borderRadius: "99px", marginBottom: "1rem", letterSpacing: "0.02em" }}>
+              <Sparkles size={12} /> AI-Powered Features
+            </span>
+            <h2 style={{ fontSize: "2.25rem", fontWeight: 900, color: C.navy, marginBottom: "0.875rem", letterSpacing: "-0.02em" }}>
+              Intelligent healthcare at your<br />
+              <span style={{ color: C.teal }}>fingertips</span>
+            </h2>
+            <p style={{ color: C.body, maxWidth: "580px", margin: "0 auto", lineHeight: 1.7, fontSize: "1rem" }}>
+              Pulse Healthcare's AI Studio brings modern machine learning to hospitals. From instant patient lookup to intelligent drug interaction analysis — reduce manual work and improve patient outcomes.
+            </p>
+          </div>
+
+          <div className="modules-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem", marginBottom: "2.5rem" }}>
+            {[
+              { title: "Smart Patient Lookup", desc: "Free-text semantic search", icon: Search, color: "#3b82f6", bg: "#eff6ff" },
+              { title: "ICD-10 Auto-Coding", desc: "Suggest codes from notes", icon: Brain, color: "#7c3aed", bg: "#f5f3ff" },
+              { title: "Voice-to-Text Notes", desc: "Whisper-powered SOAP", icon: Mic, color: "#ea580c", bg: "#fff7ed" },
+              { title: "Drug Interaction Analysis", desc: "OpenAI explains interactions", icon: AlertCircle, color: "#dc2626", bg: "#fef2f2" },
+              { title: "Discharge Summary Generator", desc: "Drafts from MAR + notes", icon: FileText, color: "#059669", bg: "#ecfdf5" },
+              { title: "Insurance Pre-Audit", desc: "Flags missing items", icon: Shield, color: C.teal, bg: "#f0fdf9" },
+              { title: "AI Triage Suggestion", desc: "Manchester scale assistant", icon: Sparkles, color: "#ca8a04", bg: "#fefce8" },
+              { title: "Executive Q&A", desc: "Natural language reporting", icon: MessageSquare, color: "#06b6d4", bg: "#ecf8fb" },
+            ].map((feature, i) => {
+              const Icon = feature.icon;
+              return (
+                <motion.div key={feature.title}
+                  initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-40px" }} transition={{ delay: i * 0.05 }}
+                  onClick={goLogin}
+                  style={{
+                    background: C.white, border: `1.5px solid ${C.border}`, borderRadius: "1rem",
+                    padding: "1.375rem", cursor: "pointer", transition: "box-shadow 0.2s, border-color 0.2s, transform 0.2s",
+                  }}
+                  whileHover={{ y: -4, boxShadow: "0 12px 32px rgba(15,32,39,0.10)", borderColor: feature.color + "50" } as any}
+                >
+                  <div style={{ width: 36, height: 36, borderRadius: "0.625rem", background: feature.bg, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "0.875rem" }}>
+                    <Icon size={18} color={feature.color} />
+                  </div>
+                  <div style={{ fontWeight: 700, fontSize: "0.875rem", color: C.navy, marginBottom: "0.375rem" }}>{feature.title}</div>
+                  <div style={{ fontSize: "0.78rem", color: C.body, lineHeight: 1.6 }}>{feature.desc}</div>
+                </motion.div>
+              );
+            })}
+          </div>
+
+          <div style={{ textAlign: "center" }}>
+            <button onClick={() => setLocation("/ai-studio")}
+              style={{ ...btnPrimary, display: "inline-flex" }}>
+              <Sparkles size={15} /> Explore AI Studio
+            </button>
           </div>
         </div>
       </section>

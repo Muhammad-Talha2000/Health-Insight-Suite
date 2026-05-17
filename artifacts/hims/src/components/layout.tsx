@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Activity, Bed, BriefcaseMedical, ChevronLeft, ChevronRight,
   FlaskConical, LayoutDashboard, LogOut, Pill, Receipt, Stethoscope,
-  Users, Zap, Menu, Bell, Search, User
+  Users, Zap, Menu, Bell, Search, User, Sparkles, BarChart3, Settings, Heart
 } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import { cn } from "@/lib/utils";
@@ -18,7 +18,11 @@ const NAV = [
   { path: "/pharmacy",   icon: Pill,            label: "Pharmacy" },
   { path: "/laboratory", icon: FlaskConical,    label: "Laboratory" },
   { path: "/billing",    icon: Receipt,         label: "Billing" },
-  { path: "/analytics",  icon: Activity,        label: "Analytics" },
+];
+
+const INSIGHTS_NAV = [
+  { path: "/analytics",  icon: Activity,        label: "Reports" },
+  { path: "/ai-studio",  icon: Sparkles,        label: "AI Studio" },
 ];
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -61,7 +65,59 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
       {/* Nav */}
       <nav style={{ flex: 1, padding: "0.5rem 0.5rem", overflowY: "auto" }}>
+        {/* Main navigation */}
         {NAV.map((item) => {
+          const active = location === item.path || location.startsWith(item.path + "/");
+          return (
+            <Link key={item.path} href={item.path} onClick={() => setMobileOpen(false)}>
+              <div style={{
+                display: "flex", alignItems: "center",
+                gap: "0.625rem",
+                padding: collapsed && !mobile ? "0.625rem" : "0.625rem 0.75rem",
+                borderRadius: "0.625rem",
+                margin: "0.125rem 0",
+                cursor: "pointer",
+                justifyContent: collapsed && !mobile ? "center" : "flex-start",
+                background: active ? "#0d9488" : "transparent",
+                color: active ? "#fff" : "#4b5563",
+                fontWeight: active ? 700 : 500,
+                fontSize: "0.85rem",
+                transition: "background 0.15s, color 0.15s",
+                position: "relative",
+              }}
+              onMouseEnter={e => { if (!active) (e.currentTarget as HTMLDivElement).style.background = "#f0fdf9"; (e.currentTarget as HTMLDivElement).style.color = active ? "#fff" : "#0d9488"; }}
+              onMouseLeave={e => { if (!active) { (e.currentTarget as HTMLDivElement).style.background = "transparent"; (e.currentTarget as HTMLDivElement).style.color = active ? "#fff" : "#4b5563"; } }}
+              >
+                <item.icon size={17} style={{ flexShrink: 0 }} />
+                {(!collapsed || mobile) && <span>{item.label}</span>}
+                {/* Tooltip for collapsed */}
+                {collapsed && !mobile && (
+                  <div style={{
+                    position: "absolute", left: "calc(100% + 8px)", top: "50%", transform: "translateY(-50%)",
+                    background: "#0f2027", color: "#fff", fontSize: "0.75rem", padding: "0.3rem 0.625rem",
+                    borderRadius: "0.375rem", whiteSpace: "nowrap", pointerEvents: "none", zIndex: 50,
+                    opacity: 0, transition: "opacity 0.15s",
+                  }} className="nav-tooltip">
+                    {item.label}
+                  </div>
+                )}
+              </div>
+            </Link>
+          );
+        })}
+
+        {/* Insights section */}
+        {(!collapsed || mobile) && (
+          <div style={{ marginTop: "1.5rem", marginBottom: "1rem" }}>
+            <div style={{
+              fontSize: "0.65rem", fontWeight: 800, color: "#9ca3af", textTransform: "uppercase",
+              letterSpacing: "0.5px", padding: "0.5rem 0.75rem", margin: "0.5rem 0",
+            }}>
+              Insights
+            </div>
+          </div>
+        )}
+        {INSIGHTS_NAV.map((item) => {
           const active = location === item.path || location.startsWith(item.path + "/");
           return (
             <Link key={item.path} href={item.path} onClick={() => setMobileOpen(false)}>
