@@ -28,8 +28,8 @@ const C = {
 export default function Login() {
   const { login } = useAuth();
   const [, setLocation] = useLocation();
-  const [username, setUsername] = useState("admin");
-  const [password, setPassword] = useState("hims2026");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -227,15 +227,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          {/* Demo hint */}
-          <div style={{ marginTop: "1.5rem", background: "#f0fdf9", border: `1px solid #99f6e4`, borderRadius: "0.75rem", padding: "0.875rem 1rem" }}>
-            <p style={{ fontSize: "0.78rem", color: C.body, margin: 0 }}>
-              <span style={{ fontWeight: 700, color: C.navy }}>Demo credentials:</span>{" "}
-              Use any role above with password{" "}
-              <code style={{ background: C.white, padding: "0.15rem 0.4rem", borderRadius: "0.3rem", color: C.teal, fontWeight: 700, border: `1px solid ${C.border}`, fontSize: "0.82rem" }}>hims2026</code>
-            </p>
-          </div>
         </motion.div>
       </div>
 
